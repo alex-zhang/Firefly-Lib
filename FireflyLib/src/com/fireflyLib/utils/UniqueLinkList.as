@@ -109,24 +109,30 @@ package com.fireflyLib.utils
 			var node:Node = Node(itemNode);
 			if(mLength == 1)
 			{
-				mHeadNode = mTailNode = null;
+				mCursorNode = mHeadNode = mTailNode = null;
 			}
 			else//must big than 1
 			{
-				if(node == mHeadNode)
+				if(node === mHeadNode)
 				{
 					mHeadNode = node.next;
 					mHeadNode.pre = null;
+					
+					if(mCursorNode === node) mCursorNode = null; 
 				}
-				else if(node == mTailNode)
+				else if(node === mTailNode)
 				{
 					mTailNode = node.pre;
 					mTailNode.next = null;
+					
+					if(mCursorNode === node) mCursorNode = mTailNode;
 				}
 				else
 				{
 					node.pre.next = node.next;
 					node.next.pre = node.pre;
+					
+					if(mCursorNode == node) mCursorNode = node.pre;
 				}
 			}
 			
