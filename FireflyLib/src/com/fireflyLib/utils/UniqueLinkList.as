@@ -21,8 +21,8 @@ package com.fireflyLib.utils
 		
 		public function findItemByFunction(func:Function):*
 		{
-			if(mLength == 0) return null;
-			
+			if(mLength == 0) return undefined;
+
 			var item:* = null;
 			var node:Node = mHeadNode;
 			while(node)
@@ -33,7 +33,7 @@ package com.fireflyLib.utils
 				node = node.next;
 			}
 			
-			return null;
+			return undefined;
 		}
 		
 		public function findItemsByFunction(func:Function):Array
@@ -65,17 +65,14 @@ package com.fireflyLib.utils
 		
 		public function clear():void
 		{
-			mHeadNode = null;
-			mTailNode = null;
-			mNodesPool.length = 0;
-			mLength = 0;
+			mCursorNode = mHeadNode = mTailNode = null;
+			mLength = mNodesPool.length = 0;
 			mItemsHashMap = new Dictionary();
-			mCursorNode = null;
 		}
 		
 		public function add(item:*):*
 		{
-			if(!item || mItemsHashMap[item] !== undefined) return null;
+			if(!item || mItemsHashMap[item] !== undefined) return undefined;
 
 			var node:Node = getFreeNode();
 			
@@ -101,10 +98,10 @@ package com.fireflyLib.utils
 		
 		public function remove(item:*):*
 		{
-			if(!item || mLength == 0) return null;
+			if(!item || mLength == 0) return undefined;
 			
 			var itemNode:* = mItemsHashMap[item];
-			if(itemNode === undefined) return null;
+			if(itemNode === undefined) return undefined;
 			
 			var node:Node = Node(itemNode);
 			if(mLength == 1)
@@ -115,14 +112,14 @@ package com.fireflyLib.utils
 			{
 				if(node === mHeadNode)
 				{
-					mHeadNode = node.next;
+					mHeadNode = mHeadNode.next;
 					mHeadNode.pre = null;
 					
 					if(mCursorNode === node) mCursorNode = null; 
 				}
 				else if(node === mTailNode)
 				{
-					mTailNode = node.pre;
+					mTailNode = mTailNode.pre;
 					mTailNode.next = null;
 					
 					if(mCursorNode === node) mCursorNode = mTailNode;
@@ -132,7 +129,7 @@ package com.fireflyLib.utils
 					node.pre.next = node.next;
 					node.next.pre = node.pre;
 					
-					if(mCursorNode == node) mCursorNode = node.pre;
+					if(mCursorNode === node) mCursorNode = node.pre;
 				}
 			}
 			
@@ -156,7 +153,7 @@ package com.fireflyLib.utils
 		
 		public function moveNext():*
 		{
-			mCursorNode = mCursorNode.next;
+			mCursorNode = mCursorNode ? mCursorNode.next : mHeadNode;
 			return mCursorNode ? mCursorNode.value : null;
 		}
 		
