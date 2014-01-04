@@ -50,7 +50,14 @@ package com.fireflyLib.utils
 		 */
 		public static function getClassFromName(className:String):Class
 		{
-			return getDefinitionByName(className) as Class;
+			var cls:Class = _classes[className] as Class; 
+			
+			if(cls == null) 
+			{
+				cls = _classes[className] = getDefinitionByName(className);
+			}
+			
+			return cls;
 		}
 		
 		public static function getClass(item:*):Class
@@ -124,14 +131,18 @@ package com.fireflyLib.utils
 			for each(var property:XML in typeXML.child("accessor"))
 			{
 				if (property.attribute("name") == field)
+				{
 					return property.attribute("type");
+				}
 			}
 			
 			// Look for a matching variable.
 			for each(var variable:XML in typeXML.child("variable"))
 			{
 				if (variable.attribute("name") == field)
+				{
 					return variable.attribute("type");
+				}
 			}
 			
 			return null;
@@ -250,7 +261,9 @@ package com.fireflyLib.utils
 		{
 			var className:String = getObjectClassName(object);
 			if (!_typeDescriptions[className])
+			{
 				_typeDescriptions[className] = describeType(object);
+			}
 			
 			return _typeDescriptions[className];
 		}
@@ -279,11 +292,6 @@ package com.fireflyLib.utils
 			}
 			
 			return _typeDescriptions[className];
-		}
-		
-		public static function addClass(className:String , classObject:Class):void
-		{
-			_classes[className] = classObject;			
 		}
 		
 		private static var _classes:Dictionary = new Dictionary();

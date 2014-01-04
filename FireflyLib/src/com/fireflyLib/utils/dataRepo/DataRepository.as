@@ -6,10 +6,17 @@ package com.fireflyLib.utils.dataRepo
 	 * DataRepository Bytes Structure
 	 *
 	 * |------------------------------------------------------------------------
+	 * | flag 'drp' 3Bytes
+	 * 
+	 * | version
+	 * | 16bit + charBytes
+	 * 
 	 * | table count       |
 	 * | 16bit             |
-	 * | tableNameLen      | tableName | tableContentBytesLen | table Content Bytes |
-	 * | 16bit             | charBytes | 32bit                |                     |
+	 * 
+	 * | tableName         | tableContentBytesLen | table Content Bytes |
+	 * | 16bit + charBytes | 32bit                | bytes                    |
+	 * 
 	 * |------------------------------------------------------------------------
 	 * 
 	 * @author zhangcheng
@@ -18,6 +25,10 @@ package com.fireflyLib.utils.dataRepo
 	
 	public class DataRepository
 	{
+		public static const FILE_FLAG:String = "drp";
+		public static const VERSION:String = "1.0.0";
+		
+		private var mVersion:String = VERSION;
 		private var mTableImplClssesMap:Array = [];//tableName => TableClass
 		private var mTablesMap:Array = [];//tableName ->[0, 1] TableInstance Bytes
 		private var mTableCount:int = 0;
@@ -27,7 +38,9 @@ package com.fireflyLib.utils.dataRepo
 			super();
 		}
 		
-		public function registTableImplClass(tableName:String, tableImplCls:Class, tableModelImplCls:Class = null):void
+		public final function get version():String { return mVersion; }
+		
+		public function registTableImplClass(tableName:String, tableModelImplCls:Class = null, tableImplCls:Class = null):void
 		{
 			if(!mTableImplClssesMap[tableName])
 			{
@@ -35,23 +48,24 @@ package com.fireflyLib.utils.dataRepo
 			}
 		}
 		
-		private function hasRegistTableImplClasses(tableName):Boolean
+		private function hasRegistTableImplClasses(tableName:String):Boolean
 		{
 			return mTableImplClssesMap[tableName] !== undefined;
 		}
 		
 		public function deserialize(input:ByteArray):void
 		{
-			mTablesMap = [];
-			
-			//defaunlt
+			//the rawdata flag
+			input.readUTFBytes(3);//->drp
+			mVersion = input.readUTF();//version
 			mTableCount = input.readUnsignedShort();
 			
 			var tableName:String;
 			
 			var tableContentBytesLen:uint = 0;
 			var tableContentBytes:ByteArray = null;
-
+			mTablesMap = [];
+			
 			for(var i:int = 0; i < mTableCount; i++)
 			{
 				//tableNameLen 16bit
@@ -67,6 +81,8 @@ package com.fireflyLib.utils.dataRepo
 		
 		public function serialize(outPut:ByteArray):void
 		{
+			outPut.writeUTFBytes(FILE_FLAG);
+			outPut.writeUTF(mVersion);//version
 			outPut.writeShort(mTableCount);
 			
 			var table:TableBasic = null
@@ -173,7 +189,7 @@ package com.fireflyLib.utils.dataRepo
 				
 				tableImplCls ||= TableBasic;
 
-				var table:TableBasic = new tableImplCls(tableModelImplCls);
+				var table:TableBasic = new tableImplCls(tableName, tableModelImplCls);
 				
 				onTableInerDeserialize(tableName, table, tableBytes);
 				onTableCreated(tableName, table);

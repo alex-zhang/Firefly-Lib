@@ -1,6 +1,6 @@
 package com.fireflyLib.debug
 {
-    import com.fireflyLib.core.SystemGlobal;
+    import com.fireflyLib.utils.GlobalPropertyBag;
     import com.fireflyLib.utils.MathUtil;
     
     import flash.display.Bitmap;
@@ -95,7 +95,7 @@ package com.fireflyLib.debug
         protected function onBitmapClick(me:MouseEvent):void
         {
             // Give focus to input.
-			SystemGlobal.stage.focus = mInput;
+			GlobalPropertyBag.stage.focus = mInput;
         }
         
         protected function onBitmapDoubleClick(me:MouseEvent = null):void
@@ -425,13 +425,13 @@ package com.fireflyLib.debug
             layout();
             mInput.text = "";
             addListeners();
-			SystemGlobal.stage.focus = mInput;
+			GlobalPropertyBag.stage.focus = mInput;
         }
         
         public function deactivate():void
         {
             removeListeners();
-			SystemGlobal.stage.focus = null;
+			GlobalPropertyBag.stage.focus = null;
         }
 		
 		public function set restrict(value:String):void

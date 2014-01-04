@@ -61,8 +61,8 @@ package com.fireflyLib.utils
 					throw new RangeError("constructorParameters length is no long!");
 					break;
 				
-				/* we only support the count of constructor pameraters count to 9, 
-				i think it's enough. other wise you'd better refactor your code. */
+				/* we only support the count of constructor pameraters count to 10, 
+				i think it's totally enough. other wise you'd better refactor your code instead. */
 			}
 			
 			return instance;

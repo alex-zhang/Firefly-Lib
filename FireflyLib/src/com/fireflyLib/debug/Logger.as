@@ -134,7 +134,7 @@ package com.fireflyLib.debug
 		 * @param method The name of the method that the warning was reported from.
 		 * @param message The warning to print to the log.
 		 */
-		public static function info(reporter:*, method:String, message:String):void
+		public static function info(reporter:*, method:String, message:String = null):void
 		{
             // Early out if we are disabled.
             if(disabled) return;
@@ -155,7 +155,7 @@ package com.fireflyLib.debug
 		 * @param method The name of the method that the debug message was reported from.
 		 * @param message The debug message to print to the log.
 		 */
-		public static function debug(reporter:*, method:String, message:String):void
+		public static function debug(reporter:*, method:String, message:String = null):void
 		{
             // Early out if we are disabled.
             if(disabled)
@@ -177,7 +177,7 @@ package com.fireflyLib.debug
          * @param method The name of the method that the warning was reported from.
          * @param message The warning to print to the log.
          */
-        public static function warn(reporter:*, method:String, message:String):void
+        public static function warn(reporter:*, method:String, message:String = null):void
         {
             // Early out if we are disabled.
             if(disabled)
@@ -199,7 +199,7 @@ package com.fireflyLib.debug
          * @param method The name of the method that the error was reported from.
          * @param message The error to print to the log.
          */
-        public static function error(reporter:*, method:String, message:String):void
+        public static function error(reporter:*, method:String, message:String = null):void
         {
             // Early out if we are disabled.
             if(disabled)
@@ -222,7 +222,7 @@ package com.fireflyLib.debug
          * @param message The message to print to the log.
          * @param type The custom type to give the message.
          */
-        public static function printCustom(reporter:*, method:String, message:String, type:String):void
+        public static function printCustom(reporter:*, method:String, type:String, message:String = null):void
         {
             // Early out if we are disabled.
             if(disabled)
@@ -231,8 +231,8 @@ package com.fireflyLib.debug
             var entry:LogEntry = new LogEntry();
             entry.reporter = TypeUtility.getClass(reporter);
             entry.method = method;
-            entry.message = method + " - " + message;
             entry.type = type;
+            entry.message = method + message ? (" - " + message) : "";
             processEntry(entry);
         }
         
@@ -276,17 +276,17 @@ package com.fireflyLib.debug
             enabled = defaultEnabled;
         }
 		
-		public function info(method:String, message:String):void
+		public function info(method:String, message:String = null):void
 		{
 			if(enabled) Logger.info(mOwner, method, message);
 		}
 		
-        public function warn(method:String, message:String):void
+        public function warn(method:String, message:String = null):void
         {
             if(enabled) Logger.warn(mOwner, method, message);
         }
         
-        public function error(method:String, message:String):void
+        public function error(method:String, message:String = null):void
         {
             if(enabled) Logger.error(mOwner, method, message);
         }

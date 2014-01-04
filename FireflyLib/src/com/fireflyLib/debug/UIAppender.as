@@ -1,6 +1,6 @@
 package com.fireflyLib.debug
 {
-	import com.fireflyLib.core.SystemGlobal;
+	import com.fireflyLib.utils.GlobalPropertyBag;
 	import com.fireflyLib.debug.Console;
 	import com.fireflyLib.debug.ILogAppender;
 	
@@ -17,7 +17,7 @@ package com.fireflyLib.debug
 	   
 		public function UIAppender()
 		{
-			SystemGlobal.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownHandler);
+			GlobalPropertyBag.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDownHandler);
 			
 			mLogViewer = new LogViewer();
 		}
@@ -35,7 +35,7 @@ package com.fireflyLib.debug
 				}
 				else
 				{
-					SystemGlobal.stage.addChild(mLogViewer);
+					GlobalPropertyBag.stage.addChild(mLogViewer);
 					
 					var char:String = String.fromCharCode(event.charCode);
 					mLogViewer.restrict = "^" + char.toUpperCase() + char.toLowerCase();	// disallow hotKey character

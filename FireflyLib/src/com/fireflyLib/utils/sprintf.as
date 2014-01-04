@@ -25,7 +25,7 @@
  *  DEALINGS IN THE SOFTWARE.  
  */
 
-package com.fireflyLib.core
+package com.fireflyLib.utils
 {
 
 /*  sprintf(3) implementation in ActionScript 3.0.

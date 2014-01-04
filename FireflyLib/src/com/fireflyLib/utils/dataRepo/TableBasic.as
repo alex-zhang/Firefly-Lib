@@ -38,11 +38,19 @@ package com.fireflyLib.utils.dataRepo
 		
 		private var mKeyFieldName:String;
 		
+		private var mIsSimpleObject:Boolean = false;
+		
 		public function TableBasic(tableName:String, 
 								   modelCls:Class = null)
 		{
 			mTableName = tableName;
-			mModelCls = modelCls || Object;
+			mModelCls = modelCls;
+			
+			if(!mModelCls)
+			{
+				mModelCls = Object;
+				mIsSimpleObject = true;
+			}
 		}
 		
 		public function deserialize(input:ByteArray):void
@@ -277,23 +285,17 @@ package com.fireflyLib.utils.dataRepo
 		
 		protected function updateRowModeValue(key:String, model:*, fieldsAndVaues:Object, isSetKey:Boolean):void
 		{
-			try
+			for(var field:String in fieldsAndVaues)
 			{
-				for(var field:String in fieldsAndVaues)
+				if(field != key && (mIsSimpleObject || field in model))
 				{
-					if(field != key)
-					{
-						model[field] = fieldsAndVaues[field];
-					}
-				}
-				
-				if(isSetKey)
-				{
-					model[mKeyFieldName] = key;
+					model[field] = fieldsAndVaues[field];
 				}
 			}
-			catch(error:Error)
+			
+			if(isSetKey)
 			{
+				model[mKeyFieldName] = key;
 			}
 		}
 		

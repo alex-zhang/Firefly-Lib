@@ -1,6 +1,6 @@
 package com.fireflyLib.debug
 {
-   import com.fireflyLib.core.sprintf;
+   import com.fireflyLib.utils.sprintf;
    import com.fireflyLib.debug.Logger;
    
    import flash.utils.getTimer;

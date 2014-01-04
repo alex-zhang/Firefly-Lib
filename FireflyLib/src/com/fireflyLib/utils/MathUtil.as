@@ -191,7 +191,7 @@ package com.fireflyLib.utils
 			return lerp(min, max, Math.random());
 		}
 		
-		public static function randomFromValues(values:Array):Object
+		public static function randomFromValues(values:Array):*
 		{
 			return values[randomIndex(values.length)];
 		}

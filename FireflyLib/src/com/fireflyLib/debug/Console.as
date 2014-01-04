@@ -1,8 +1,9 @@
 package com.fireflyLib.debug
 {
-    import com.fireflyLib.core.SystemGlobal;
+    import com.fireflyLib.utils.GlobalPropertyBag;
     import com.fireflyLib.utils.StringUtil;
     
+    import flash.display.Stage;
     import flash.external.ExternalInterface;
     
     /**
@@ -174,12 +175,12 @@ package com.fireflyLib.debug
                 if (!mStats)
                 {
                     mStats = new Stats();
-					SystemGlobal.stage.addChild(mStats);
+					Stage(GlobalPropertyBag.read("stage")).addChild(mStats);
                     Logger.print(Console, "Enabled FPS display.");
                 }
                 else
                 {
-					SystemGlobal.stage.removeChild(mStats);
+					Stage(GlobalPropertyBag.read("stage")).removeChild(mStats);
                     mStats = null;
                     Logger.print(Console, "Disabled FPS display.");
                 }

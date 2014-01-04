@@ -36,11 +36,11 @@ package com.fireflyLib.utils
 			return undefined;
 		}
 		
-		public function findItemsByFunction(func:Function):Array
+		public function findItemsByFunction(func:Function, results:Array = null):Array
 		{
 			if(mLength == 0) return null;
 			
-			var results:Array = [];
+			if(results == null) results = [];
 			
 			var item:* = null;
 			var node:Node = mHeadNode;

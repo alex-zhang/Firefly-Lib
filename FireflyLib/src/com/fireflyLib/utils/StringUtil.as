@@ -303,9 +303,9 @@ package com.fireflyLib.utils
 		//key:value;key:name
 		public static function decodeSimpleKeyValueStr(str:String, 
 													   fstDelimiter:String = ";", 
-													   secDelimiter:String = ":"):Object
+													   secDelimiter:String = ":", typeClass:Class = null):Object
 		{
-			var result:Object = {};
+			var result:Object = typeClass ? new typeClass() : {};
 			
 			var arr:Array = str.split(fstDelimiter);
 			
@@ -317,8 +317,10 @@ package com.fireflyLib.utils
 				itemStr = arr[i];
 				
 				itemArr = itemStr.split(secDelimiter);
-				
-				result[itemArr[0]] = itemArr[1];
+				if(itemArr.length == 2)
+				{
+					result[itemArr[0]] = itemArr[1];					
+				}
 			}
 			
 			return result;

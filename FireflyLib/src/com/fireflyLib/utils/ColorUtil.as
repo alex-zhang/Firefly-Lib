@@ -76,6 +76,16 @@ package com.fireflyLib.utils
 			return results;
 		}
 		
+		public static  function colorToRgb(color:uint, results:Array = null):Array
+		{
+			results ||= [];
+			
+			results[1] = (color >> 16) & 0xFF;//red
+			results[2] = (color >> 8) & 0xFF;//green
+			results[3] = color & 0xFF;//blue
+			return results;
+		}
+		
 		/**
 		 *  Performs a linear brightness adjustment of an RGB color.
 		 *
