@@ -11,7 +11,7 @@ package com.fireflyLib.utils
 		public static function getFileExtension(file:String):String
 		{
 			var extensionIndex:Number = file.lastIndexOf(".");
-			if(extensionIndex == -1)
+			if(extensionIndex == -1) 
 			{
 				//No extension
 				return "";
@@ -35,25 +35,6 @@ package com.fireflyLib.utils
 			return str.slice(0, 1);
 		}
 		
-		public static function startWithChars(str:String, chars:String):Boolean
-		{
-			if(!str) return false;
-			
-			return str.indexOf(chars) == 0;
-		}
-		
-		public static function endWithChars(str:String, chars:String):Boolean
-		{
-			if(!str) return false;
-			
-			return str.lastIndexOf(chars) == str.length - 1;
-		}
-		
-		public static function startOrEndWithChars(str:String, chars:String):Boolean
-		{
-			return startWithChars(str, chars) || endWithChars(str, chars)
-		}
-		
 		/**
 		 * Capitalize the first letter of a string 
 		 * @param str String to capitalize the first leter of
@@ -64,141 +45,81 @@ package com.fireflyLib.utils
 			return str.substring(1, 0).toUpperCase() + str.substring(1);
 		}
 		
-		//-1 left 1 right 0 both
-        public static function trimWhitespace(str:String, trimType:int = 0):String
+        public static function trimWhitespace(str:String):String
         {
             if(str == null) return "";
             
-			var startIndex:int = 0;
-			if(trimType <= 0)
-			{
-				while (isWhitespace(str.charAt(startIndex)))
-				{
-					startIndex++;
-				}
-			}
+            var startIndex:int = 0;
+            while (isWhitespace(str.charAt(startIndex)))
+                ++startIndex;
             
             var endIndex:int = str.length - 1;
-			if(trimType >= 0)
-			{
-				while (isWhitespace(str.charAt(endIndex)))
-				{
-					endIndex--;
-				}
-			}
+            while (isWhitespace(str.charAt(endIndex)))
+                --endIndex;
             
             if (endIndex >= startIndex)
-			{
                 return str.slice(startIndex, endIndex + 1);
-			}
             else
-			{
                 return "";
-			}
         }
-
-		//trimChar("abc", "a") = > "bc" 
-		public static function trimChar(str:String, char:String, trimType:int = 0):String
-		{
-			if(str == null) return "";
-			if(!char || char == "") return "";
-			
-			var startIndex:int = 0;
-			if(trimType <= 0)
-			{
-				while(str.charAt(startIndex) == char)
-				{
-					startIndex++;
-				}
-			}
-			
-			var endIndex:int = str.length - 1;
-			if(trimType >= 0)
-			{
-				while(str.charAt(endIndex) == char)
-				{
-					endIndex--;
-				}	
-			}
-			
-			if(endIndex >= startIndex)
-			{
-				return str.slice(startIndex, endIndex + 1);
-			}
-			else
-			{
-				return "";
-			}
-		}
 		
-		public static function trimCharsAnd(str:String, chars:String, trimType:int = 0):String
+		public static function trimChar(str:String, char:String):String
 		{
 			if(str == null) return "";
-			if(!chars || chars == "") return "";
-			var charsLength:int = chars.length;
-			if(charsLength == 0) return "";
 			
 			var startIndex:int = 0;
-			if(trimType <= 0)
-			{
-				while(str.substr(startIndex, charsLength) == chars)
-				{
-					startIndex += charsLength;
-				}
-			}
+			while (str.charAt(startIndex) == char)
+				++startIndex;
 			
 			var endIndex:int = str.length - 1;
-			if(trimType >= 0)
-			{
-				while(str.substr(endIndex - charsLength + 1, charsLength) == chars)
-				{
-					endIndex -= charsLength;
-				}
-			}
+			while(str.charAt(endIndex) == char)
+				--endIndex;
 			
-			if(endIndex >= startIndex)
-			{
+			if (endIndex >= startIndex)
 				return str.slice(startIndex, endIndex + 1);
-			}
 			else
-			{
 				return "";
-			}
 		}
 
-		//trimChar("abc", "a|c") = > "b"
-		public static function trimCharsOr(str:String, chars:Array, trimType:int = 0):String
+		public static function trimChars(str:String, chars:Array):String
 		{
 			if(str == null) return "";
 			if(!chars || chars.length == 0) return "";
 			
 			var startIndex:int = 0;
-			if(trimType <= 0)
-			{
-				while (chars.indexOf(str.charAt(startIndex)) != -1)
-				{
-					startIndex++;
-				}
-			}
+			while (chars.indexOf(str.charAt(startIndex)) != -1)
+				++startIndex;
 			
 			var endIndex:int = str.length - 1;
-			if(trimType >= 0)
-			{
-				while(chars.indexOf(str.charAt(endIndex)) != -1)
-				{
-					endIndex--;
-				}
-			}
+			while(chars.indexOf(str.charAt(endIndex)) != -1)
+				--endIndex;
 			
 			if (endIndex >= startIndex)
-			{
 				return str.slice(startIndex, endIndex + 1);
-			}
 			else
-			{
 				return "";
-			}
 		}
+        
+//        public static function trimArrayElements(value:String, delimiter:String):String
+//        {
+//            if (value != "" && value != null)
+//            {
+//                var items:Array = value.split(delimiter);
+//                
+//                var len:int = items.length;
+//                for (var i:int = 0; i < len; i++)
+//                {
+//                    items[i] = StringUtil.trim(items[i]);
+//                }
+//                
+//                if (len > 0)
+//                {
+//                    value = items.join(delimiter);
+//                }
+//            }
+//            
+//            return value;
+//        }
 		
         public static function isWhitespace(character:String):Boolean
         {

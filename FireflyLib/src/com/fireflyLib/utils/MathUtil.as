@@ -5,8 +5,9 @@ package com.fireflyLib.utils
 
 	public class MathUtil
 	{
-		public static const helperFlashPoint:Point = new Point();
-		public static const helperMatrix:Matrix = new Matrix();
+		public static const ZERO_POINT:Point = new Point();
+		
+		public static const ZERO_MATRIX:Matrix = new Matrix();
 		
 		/**
 		 * Two times PI. 
@@ -220,14 +221,14 @@ package com.fireflyLib.utils
 		 * 
 		 * @return	The same Flash <code>Array</code> object that you passed in in the first place.
 		 */
-		public static  function shuffle(cards:Array, howManyTimes:uint):Array
+		public static  function shuffle(cards:Array,HowManyTimes:uint):Array
 		{
 			var i:uint = 0;
 			var index1:uint;
 			var index2:uint;
 			var card:Object;
 			
-			while(i < howManyTimes)
+			while(i < HowManyTimes)
 			{
 				index1 = randomIndex(cards.length);
 				index2 = randomIndex(cards.length);

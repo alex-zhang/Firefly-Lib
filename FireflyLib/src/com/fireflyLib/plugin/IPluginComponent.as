@@ -1,4 +1,4 @@
-package com.fireflyLib.utils.plugin
+package com.fireflyLib.plugin
 {
 	public interface IPluginComponent
 	{

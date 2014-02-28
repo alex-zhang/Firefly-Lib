@@ -4,7 +4,7 @@ package com.fireflyLib.utils
 
 	public class UniqueLinkList
 	{
-		private var mLength:int = 0;
+		private var mLength:uint = 0;
 		private var mItemsHashMap:Dictionary = new Dictionary();//item->node
 		private var mNodesPool:Vector.<Node> = new Vector.<Node>();
 		private var mNodeSortArray:Vector.<Node>;
@@ -19,71 +19,46 @@ package com.fireflyLib.utils
 			super();
 		}
 		
-		public function findItemByFunction(filterFunc:Function = null):*
+		public function findItemByFunction(func:Function):*
 		{
-			if(filterFunc != null && mLength > 0)
+			if(mLength == 0) return undefined;
+
+			var item:* = null;
+			var node:Node = mHeadNode;
+			while(node)
 			{
-				var item:* = null;
-				var node:Node = mHeadNode;
-				while(node)
-				{
-					item = node.value;
-					if(filterFunc(item))
-					{
-						return item;
-					}
-					
-					node = node.next;
-				}
+				item = node.value;
+				if(func(item)) return item;
+				
+				node = node.next;
 			}
 			
 			return undefined;
 		}
 		
-		public function findItemsByFunction(results:Array = null, filterFunc:Function = null):Array
+		public function findItemsByFunction(func:Function, results:Array = null):Array
 		{
-			if(!results) results = [];
+			if(mLength == 0) return null;
 			
-			if(filterFunc != null && mLength > 0)
+			if(results == null) results = [];
+			
+			var item:* = null;
+			var node:Node = mHeadNode;
+			while(node)
 			{
-				var item:* = null;
-				var node:Node = mHeadNode;
-				while(node)
+				item = node.value;
+				if(func(item))
 				{
-					item = node.value;
-					if(filterFunc(item))
-					{
-						results.push(item);
-					}
-					
-					node = node.next;
-				}
-			}
-			
-			return results;
-		}
-		
-		public function findAllItems(results:Array = null):Array
-		{
-			if(!results) results = [];
-			
-			if(mLength > 0)
-			{
-				var item:* = null;
-				var node:Node = mHeadNode;
-				while(node)
-				{
-					item = node.value;
 					results.push(item);
-					
-					node = node.next;
 				}
+				
+				node = node.next;
 			}
 			
 			return results;
 		}
 		
-		public function get length():int
+		public function get length():uint
 		{
 			return mLength;
 		}
@@ -165,7 +140,7 @@ package com.fireflyLib.utils
 			return item;
 		}
 		
-		public function has(item:*):Boolean
+		public function hasItem(item:*):Boolean
 		{
 			return mItemsHashMap[item] !== undefined;
 		}
@@ -182,75 +157,9 @@ package com.fireflyLib.utils
 			return mCursorNode ? mCursorNode.value : null;
 		}
 		
-		public function movePre():*
-		{
-			mCursorNode = mCursorNode ? mCursorNode.pre : mTailNode;
-			return mCursorNode ? mCursorNode.value : null;
-		}
-		
-		public function moveLast():*
-		{
-			mCursorNode = mTailNode;
-			return mCursorNode ? mCursorNode.value : null;
-		}
-		
-		public function indexOf(findItem:*):int
-		{
-			if(mLength > 0)
-			{
-				if(!has(findItem)) return -1;
-				
-				var index:int = -1;
-				
-				var item:* = null;
-				var node:Node = mHeadNode;
-				while(node)
-				{
-					item = node.value;
-					index++;
-					
-					if(item === findItem)
-					{
-						return index;
-					}
-					
-					node = node.next;
-				}
-			}
-			
-			return -1;
-		}
-		
-		public function lastIndexOf(findItem:*):int
-		{
-			if(mLength > 0)
-			{
-				if(!has(item)) return -1;
-				
-				var index:int = -1;
-				
-				var item:* = null;
-				var node:Node = mTailNode;
-				while(node)
-				{
-					item = node.value;
-					index++;
-					
-					if(item === findItem)
-					{
-						return mLength - index - 1;
-					}
-					
-					node = node.pre;
-				}
-			}
-			
-			return -1;
-		}
-		
 		public function sort(compareFunction:Function):void
 		{
-			if(!compareFunction || mLength <= 1) return;
+			if(mLength < 1) return;
 			
 			if(!mNodeSortArray) mNodeSortArray = new Vector.<Node>(); 
 			

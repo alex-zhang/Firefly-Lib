@@ -1,27 +1,28 @@
 package com.fireflyLib.utils
 {
-	import flash.utils.getQualifiedClassName;
+	import flash.utils.Dictionary;
 	
 	public class EventEmitter
 	{
-		private var mEventListeners:Array
-		private var mOwner:Object;
+		private var mEventListeners:Dictionary;
+		private var mEmitterOwner:Object;
 		
-		public function EventEmitter(owner:Object = null)
+		public function EventEmitter(emitterOwner:* = null)
 		{
 			super();
 			
-			mOwner = owner;
+			mEmitterOwner = emitterOwner;
 		}
 		
-		public final function get owner():Object
+		public function dispose():void
 		{
-			return mOwner || this;
+			mEventListeners = null;
+			mEmitterOwner = null;
 		}
 		
 		public function addEventListener(eventType:String, listener:Function):void
 		{
-			if(!mEventListeners) mEventListeners = [];
+			if(mEventListeners == null) mEventListeners = new Dictionary();
 			
 			var listeners:Vector.<Function> = mEventListeners[eventType] as Vector.<Function>;
 			if(listeners == null)
@@ -80,39 +81,15 @@ package com.fireflyLib.utils
 			var listenerLength:uint = listeners.length;
 			for(var i:int = 0; i < listenerLength; i++)
 			{
-				if(mOwner)
+				if(mEmitterOwner)
 				{
-					listeners[i].call(null, mOwner, eventObject);
+					listeners[i].call(null, mEmitterOwner, eventObject);
 				}
 				else
 				{
 					listeners[i].call(null, this, eventObject);
 				}
 			}
-		}
-		
-		public function dispose():void
-		{
-			mEventListeners = null;
-			mOwner = null;
-		}
-		
-		public function toString():String
-		{
-			var results:String = "class: " + getQualifiedClassName(this) + "\n";
-			
-			if(mEventListeners != null)
-			{
-				var listeners:Vector.<Function>;
-				for(var eventType:String in mEventListeners)
-				{
-					listeners = mEventListeners[eventType] as Vector.<Function>;
-					
-					results += "listen eventType: " + eventType + " count: " + listeners.length + "\n";
-				}
-			}
-			
-			return results;
 		}
 	}
 }

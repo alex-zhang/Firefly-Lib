@@ -13,9 +13,9 @@ package com.fireflyLib.utils
 			return getInstance().has(name);
 		}
 		
-		public static function write(name:String, value:*, hasEvent:Boolean = false):*
+		public static function write(name:String, value:*):*
 		{
-			return getInstance().write(name, value, hasEvent);
+			return getInstance().write(name, value);
 		}
 		
 		public static function read(name:String):*
@@ -23,28 +23,24 @@ package com.fireflyLib.utils
 			return getInstance().read(name);
 		}
 		
-		public static function update(name:String, value:*, hasEvent:Boolean = false):*
+		public static function update(name:String, value:*):*
 		{
-			return getInstance().update(name, value, hasEvent);
+			return getInstance().update(name, value);
 		}
 
-		public static function remove(name:String, hasEvent:Boolean = false):*
+		public static function remove(name:String):*
 		{
-			return getInstance().remove(name, hasEvent);
+			return getInstance().remove(name);
 		}
 			
-		public static function getInstance():GlobalPropertyBag
+		private static function getInstance():GlobalPropertyBag
 		{
-			if(!mInstance) mInstance = new GlobalPropertyBag();
+			if(!mInstance)
+			{
+				mInstance = new GlobalPropertyBag();
+			}
 			
 			return mInstance;
-		}
-		
-		public function GlobalPropertyBag()
-		{
-			super();
-			
-			if(mInstance) throw new Error("GlobalPropertyBag Singleton mode.");
 		}
 	}
 }

@@ -56,6 +56,9 @@ package com.fireflyLib.utils
 		//d(day):0, h(hour):0, m(minute):0,s(second):0,ms(millisecond):0 
 		public static function calculateTimeByMillisecond(ms:Number, results:Object = null):Object
 		{
+			var quotient:uint;//商
+			var modulo:Number;//余数
+			
 			var day:uint = ms / ONE_DAY_MILLISECOND;
 			ms %= ONE_DAY_MILLISECOND;
 			

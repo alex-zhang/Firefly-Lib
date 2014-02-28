@@ -1,59 +1,45 @@
 package com.fireflyLib.utils
 {
-	public class PropertyBag extends EventEmitter
+	public class PropertyBag
 	{
-		public static const WRITE:String = "write";
-		public static const UPDATE:String = "update";
-		public static const REMOVE:String = "remove";
-		public static const CLEAR:String = "clear";
-		
-		protected var mPropertiesRowData:Array = null;
+		protected var mPropertiesData:Array = null;
 		
 		public function PropertyBag(data:Object = null)
 		{
-			mPropertiesRowData = [];
+			mPropertiesData = [];
 			
 			for(var key:String in data)
 			{
-				mPropertiesRowData[key] = data[key];
+				mPropertiesData[key] = data[key];
 			}
 		}
 		
 		public function has(name:String):Boolean
 		{
-			return mPropertiesRowData[name] !== undefined;
+			return mPropertiesData[name] !== undefined;
 		}
 		
-		public function write(name:String, value:*, hasEvent:Boolean = false):*
+		public function write(name:String, value:*):*
 		{
-			var result:* = mPropertiesRowData[name];
-			mPropertiesRowData[name] = value;
-			
-			if(hasEvent && hasEventListener(WRITE))
-			{
-				dispatchEvent(WRITE, {name:name, value:value});
-			}
+			var result:* = mPropertiesData[name];
+			mPropertiesData[name] = value;
 			
 			return result;
 		}
 		
 		public function read(name:String):*
 		{
-			return mPropertiesRowData[name];
+			return mPropertiesData[name];
 		}
 		
-		public function update(name:String, value:*, hasEvent:Boolean = false):*
+		public function update(name:String, value:*):*
 		{
+			var result:*;
+			
 			if(has(name))
 			{
-				var result:* = mPropertiesRowData[name];
-				mPropertiesRowData[name] = value;
-				
-				if(hasEvent && hasEventListener(UPDATE))
-				{
-					dispatchEvent(UPDATE, {name:name, lastValue: result, value:value});
-				}
-				
+				result = mPropertiesData[name];
+				mPropertiesData[name] = value;
 				return result;
 			} 
 			else 
@@ -62,50 +48,20 @@ package com.fireflyLib.utils
 			}	
 		}
 		
-		public function remove(name:String, hasEvent:Boolean = false):*
+		public function remove(name:String):*
 		{
-			var result:* = mPropertiesRowData[name];
-			delete mPropertiesRowData[name];
-			
-			if(hasEvent && hasEventListener(REMOVE))
-			{
-				dispatchEvent(REMOVE, {name:name, value:result});
-			}
+			var result:* = mPropertiesData[name];
+			delete mPropertiesData[name];
 			
 			return result;
 		}
 		
-		public function clear(hasEvent:Boolean = false):void
+		public function clear():void
 		{
-			for(var key:String in mPropertiesRowData)
+			for(var key:String in mPropertiesData)
 			{
-				delete mPropertiesRowData[key];
+				delete mPropertiesData[key];
 			}
-			
-			if(hasEvent && hasEventListener(CLEAR))
-			{
-				dispatchEvent(CLEAR);
-			}
-		}
-		
-		override public function dispose():void
-		{
-			super.dispose();
-			
-			clear();
-			mPropertiesRowData = null;
-		}
-		
-		override public function toString():String
-		{
-			var results:String = super.toString();
-				
-			for(var key:String in mPropertiesRowData)
-			{
-				results += "key: " + key + " value: " + mPropertiesRowData[key] + "\n";
-			}
-			
-			return results;
 		}
 	}
 }
