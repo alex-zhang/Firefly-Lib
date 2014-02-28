@@ -102,7 +102,7 @@ package com.fireflyLib.debug
             for(i = 0; i< n; i++)
 			{
 				ILogAppender(listeners[i]).addLogMessage(entry.type, 
-					TypeUtility.getObjectClassName(entry.reporter), 
+					TypeUtility.getQualifiedClassName(entry.reporter), 
 					entry.message);
 			}
         }
