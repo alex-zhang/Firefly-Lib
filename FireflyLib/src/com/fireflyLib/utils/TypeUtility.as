@@ -6,6 +6,7 @@ package com.fireflyLib.utils
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	import flash.utils.getQualifiedSuperclassName;
 	
 	/**
 	 * TypeUtility is a static class containing methods that aid in type
@@ -14,21 +15,6 @@ package com.fireflyLib.utils
 	public class TypeUtility
 	{
 		/**
-		 * Registers a function that will be called when the specified type needs to be
-		 * instantiated. The function should return an instance of the specified type.
-		 * 
-		 * @param typeName The name of the type the specified function should handle.
-		 * @param instantiator The function that instantiates the specified type.
-		 */
-		public static function registerInstantiator(typeName:String, instantiator:Function):void
-		{
-			if (_instantiators[typeName])
-				Logger.warn("TypeUtility", "RegisterInstantiator", "An instantiator for " + typeName + " has already been registered. It will be replaced.");
-			
-			_instantiators[typeName] = instantiator;
-		}
-		
-		/**
 		 * Returns the fully qualified name of the type
 		 * of the passed in object.
 		 * 
@@ -36,9 +22,22 @@ package com.fireflyLib.utils
 		 * 
 		 * @return The name of the specified object's type.
 		 */
-		public static function getObjectClassName(object:*):String
+		public static function getQualifiedClassName(object:*):String
 		{
 			return flash.utils.getQualifiedClassName(object);
+		}
+		
+		public static function getSimpleClassName(object:*):String
+		{
+			var name:String = getQualifiedClassName(object);
+			
+			var index:int = name.indexOf("::");
+			if (index != -1)
+			{
+				name = name.substr(index + 2);
+			}
+			
+			return name;
 		}
 		
 		/**
@@ -52,7 +51,7 @@ package com.fireflyLib.utils
 		{
 			var cls:Class = _classes[className] as Class; 
 			
-			if(cls == null) 
+			if(cls == null)
 			{
 				cls = _classes[className] = getDefinitionByName(className);
 			}
@@ -62,57 +61,53 @@ package com.fireflyLib.utils
 		
 		public static function getClass(item:*):Class
 		{
-			if(item is Class || item == null)
+			if(item is Class)
+			{
 				return item;
-			
-			return Object(item).constructor;
+			}
+			else if(item is String)
+			{
+				return getClassFromName(item);
+			}
+			else
+			{
+				return Object(item).constructor;
+			}
 		}
 		
-		/**
-		 * Creates an instance of a type based on its name.
-		 * 
-		 * @param className The name of the class to instantiate.
-		 * 
-		 * @return An instance of the class, or null if instantiation failed.
-		 */
-		public static function instantiate(className:String, suppressError:Boolean = false):*
+		public static function isBaiscType(object:*):Boolean
 		{
-			// Deal with strings explicitly as they are a primitive.
-			if (className == "String")
-				return "";
-			
-			// Class is also a primitive type.
-			if(className == "Class")
-				return Class;
-			
-			// Check for overrides.
-			if (_instantiators[className])
-				return _instantiators[className]();
-			
-			// Give it a shot!
+			return (object is String ||
+				object is Number ||
+				object is int ||
+				object is uint ||
+				object is Boolean);
+		}
+		
+		public static function isDynamicObjectType(object:*):Boolean
+		{
 			try
 			{
-				
-				return new (getDefinitionByName(className));
+				// this test for checking whether an object is dynamic or not is 
+				// pretty hacky, but it assumes that no-one actually has a 
+				// property defined called "wootHackwoot"
+				object["wootHackwoot"];
 			}
 			catch (e:Error)
-			{												
-				if(!suppressError)
-				{
-					// if we can not get the definition, it might reside in another swf
-					// so lets see if we can get the class from the _classes dictionary.
-					var thisClass:Class = _classes[className];
-					if (thisClass!=null) 
-						return new thisClass();
-					
-					Logger.warn(null, "Instantiate", "Failed to instantiate " + className + " due to " + e.toString());
-					Logger.warn(null, "Instantiate", "Is " + className + " included in your SWF? Make sure you call PBE.registerType(" + className + "); somewhere in your project.");				 
-				}
+			{
+				// our object isn't from a dynamic class
+				return false;
 			}
-			
-			// If we get here, couldn't new it.
-			return null;
+			return true;
 		}
+		
+		public static function isRootObjectType(obj:*):Boolean
+		{
+			if(isBaiscType(obj) || !obj) return false;
+			
+			return getQualifiedSuperclassName(obj) === null;
+		}
+		
 		
 		/**
 		 * Gets the type of a field as a string for a specific field on an object.
@@ -259,7 +254,7 @@ package com.fireflyLib.utils
 		 */
 		public static function getTypeDescription(object:*):XML
 		{
-			var className:String = getObjectClassName(object);
+			var className:String = getQualifiedClassName(object);
 			if (!_typeDescriptions[className])
 			{
 				_typeDescriptions[className] = describeType(object);
