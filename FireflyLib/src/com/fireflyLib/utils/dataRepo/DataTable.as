@@ -1,4 +1,4 @@
-package com.fireflyLib.utils.dataRepo
+package src.com.fireflyLib.utils.dataRepo
 {
 	import flash.utils.ByteArray;
 
@@ -22,26 +22,25 @@ package com.fireflyLib.utils.dataRepo
 	 * | ................. | ................ | ........... | ...........
 	 * |------------------------------------------------------------------------
 	 * 
-	 * @author zhangcheng
+	 * @author Alex Zhang
 	 * 
 	 */	
-	public class TableBasic
+	public class DataTable
 	{
 		private var mTableName:String;
 		private var mModelCls:Class;
 
 		private var mFieldsCount:int = 0;
-		private var mFieldsNames:Array = [];
+		private var mFieldsNames:Array = null;
 		
 		private var mRowCount:int = 0;
-		private var mModesMap:Array = [];//key ->[0, 1]0->instance(mModelCls) 1->Bytes
+		private var mModesMap:Array = null;//key ->[0, 1]0->instance(mModelCls) 1->Bytes
 		
 		private var mKeyFieldName:String;
 		
 		private var mIsSimpleObject:Boolean = false;
 		
-		public function TableBasic(tableName:String, 
-								   modelCls:Class = null)
+		public function DataTable(tableName:String, modelCls:Class = null)
 		{
 			mTableName = tableName;
 			mModelCls = modelCls;
@@ -117,7 +116,7 @@ package com.fireflyLib.utils.dataRepo
 				output.writeUTF(fieldName);
 			}
 			
-			var model:* = null;
+			var model:Object = null;
 			var modelBytes:ByteArray = null;
 			
 			for(var rowKey:String in mModesMap)
@@ -197,20 +196,19 @@ package com.fireflyLib.utils.dataRepo
 				throw Error("TableBasic.create: name: " + mTableName + "key: " + key + " has exsit!");
 			}
 
-			var model:* = new mModelCls();
-			
+			var model:Object = new mModelCls();
 			mModesMap[key] = [model, null];
 			mRowCount++;
 			
 			onRowModeCreated(model, key, fieldsAndVaues);
 		}
 		
-		protected function onRowModeCreated(model:*, key:String, fieldsAndVaues:Object):void
+		protected function onRowModeCreated(model:Object, key:String, fieldsAndVaues:Object):void
 		{
 			updateRowModeValue(key, model, fieldsAndVaues, true);
 		}
 		
-		public function find(key:String):*
+		public function find(key:String):Object
 		{
 			if(!hasRow(key)) return undefined;
 			
@@ -218,7 +216,7 @@ package com.fireflyLib.utils.dataRepo
 			if(rowData[1] != null)
 			{
 				var rowModelBytes:ByteArray = rowData[1];
-				var model:* = new mModelCls();
+				var model:Object = new mModelCls();
 				
 				onRowInerDeserialize(key, model, rowModelBytes);
 
@@ -232,7 +230,7 @@ package com.fireflyLib.utils.dataRepo
 			return rowData[0];
 		}
 		
-		protected function onRowInerDeserialize(key:String, model:*, rowModelBytes:ByteArray):void
+		protected function onRowInerDeserialize(key:String, model:Object, rowModelBytes:ByteArray):void
 		{
 			var rowFieldName:String;
 			var rowFieldValues:String;
@@ -278,12 +276,12 @@ package com.fireflyLib.utils.dataRepo
 			onRowModeUpdated(key, find(key), fieldsAndVaues);
 		}
 		
-		protected function onRowModeUpdated(key:String, model:*, fieldsAndVaues:Object):void
+		protected function onRowModeUpdated(key:String, model:Object, fieldsAndVaues:Object):void
 		{
 			updateRowModeValue(key, model, fieldsAndVaues, false);
 		}
 		
-		protected function updateRowModeValue(key:String, model:*, fieldsAndVaues:Object, isSetKey:Boolean):void
+		protected function updateRowModeValue(key:String, model:Object, fieldsAndVaues:Object, isSetKey:Boolean):void
 		{
 			for(var field:String in fieldsAndVaues)
 			{
@@ -306,7 +304,7 @@ package com.fireflyLib.utils.dataRepo
 				throw Error("TableBasic.del: " + key + "not exsit!");
 			}
 			
-			var model:* = find(key);
+			var model:Object = find(key);
 			
 			delete mModesMap[key];
 			mRowCount--;
@@ -314,7 +312,7 @@ package com.fireflyLib.utils.dataRepo
 			onRowModeDeleted(key, model);
 		}
 		
-		protected function onRowModeDeleted(key:String, model:*):void
+		protected function onRowModeDeleted(key:String, model:Object):void
 		{
 		}
 

@@ -1,4 +1,4 @@
-package com.fireflyLib.utils.dataRepo
+package src.com.fireflyLib.utils.dataRepo
 {
 	import flash.utils.ByteArray;
 
@@ -85,7 +85,7 @@ package com.fireflyLib.utils.dataRepo
 			outPut.writeUTF(mVersion);//version
 			outPut.writeShort(mTableCount);
 			
-			var table:TableBasic = null
+			var table:DataTable = null
 			var tableContentBytes:ByteArray = null;
 			
 			for(var tableName:String in mTablesMap)
@@ -109,7 +109,7 @@ package com.fireflyLib.utils.dataRepo
 		}
 		
 		public function createTable(tableName:String,
-									table:TableBasic):void
+									table:DataTable):void
 		{
 			if(hasTable(tableName))
 			{
@@ -146,7 +146,7 @@ package com.fireflyLib.utils.dataRepo
 			delete mTablesMap[tableName];
 			mTableCount--;
 			
-			var table:TableBasic = tableData[0];
+			var table:DataTable = tableData[0];
 			if(table)
 			{
 				onTableDropped(table);
@@ -157,7 +157,7 @@ package com.fireflyLib.utils.dataRepo
 			}
 		}
 		
-		protected function onTableDropped(table:TableBasic):void
+		protected function onTableDropped(table:DataTable):void
 		{
 			table.dispose();
 		}
@@ -167,7 +167,7 @@ package com.fireflyLib.utils.dataRepo
 			return mTablesMap[tableName] !== undefined;
 		}
 		
-		public function findTable(tableName:String):TableBasic
+		public function findTable(tableName:String):DataTable
 		{
 			if(!hasTable(tableName)) return null;
 			
@@ -187,9 +187,9 @@ package com.fireflyLib.utils.dataRepo
 					tableModelImplCls = tableImplClsses[1] as Class;
 				}
 				
-				tableImplCls ||= TableBasic;
+				tableImplCls ||= DataTable;
 
-				var table:TableBasic = new tableImplCls(tableName, tableModelImplCls);
+				var table:DataTable = new tableImplCls(tableName, tableModelImplCls);
 				
 				onTableInerDeserialize(tableName, table, tableBytes);
 				onTableCreated(tableName, table);
@@ -200,15 +200,15 @@ package com.fireflyLib.utils.dataRepo
 				tableData[0] = table;
 			}
 
-			return tableData[0] as TableBasic;
+			return tableData[0] as DataTable;
 		}
 		
-		protected function onTableInerDeserialize(tableName:String, table:TableBasic, tableBytes:ByteArray):void
+		protected function onTableInerDeserialize(tableName:String, table:DataTable, tableBytes:ByteArray):void
 		{
 			table.deserialize(tableBytes);
 		}
 		
-		protected function onTableCreated(tableName:String, table:TableBasic):void
+		protected function onTableCreated(tableName:String, table:DataTable):void
 		{
 		}
 		
@@ -245,7 +245,7 @@ package com.fireflyLib.utils.dataRepo
 		{
 			for each(var tableData:Array in mTablesMap)
 			{
-				var table:TableBasic = tableData[0];
+				var table:DataTable = tableData[0];
 				if(table)
 				{
 					onTableDropped(table);
