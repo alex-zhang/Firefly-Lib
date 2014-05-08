@@ -14,13 +14,14 @@ package com.fireflyLib.utils
 			if(sourceArray == null) return null;
 			
 			var results:Array = sourceArray.concat();
-			results.sort(
-				function(a:*, b:*):Number
-				{
-					return int(MathUtil.randomFromValues([-1, 0, 1]));
-				}
-			);
+			results.sort(__randomSortMethod);
 			return results;
+		}
+		
+		private static const __randomSortRetureValues:Vector.<int> = Vector.<int>([-1, 0, 1]);
+		private static function __randomSortMethod():Number
+		{
+			return __randomSortMethod[int(Math.random() * 3)]; 
 		}
     }
 }

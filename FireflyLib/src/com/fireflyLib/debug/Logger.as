@@ -43,11 +43,16 @@ package com.fireflyLib.debug
         /**
          * Initialize the logging system.
          */
-        public static function startup():void
+        public static function startup(configCallback:Function = null):void
         {
             // Put default listeners into the list.
-            registerListener(new TraceAppender());
-			registerListener(new UIAppender());
+			configCallback ||= function():void
+			{
+				Logger.registerListener(new TraceAppender());
+				Logger.registerListener(new UIAppender());
+			}
+				
+			configCallback();
             
             // Process pending messages.
             started = true;
@@ -62,7 +67,7 @@ package com.fireflyLib.debug
             pendingEntries.length = 0;
             pendingEntries = null;
         }
-        
+		
         /**
          * Call to destructively disable logging. This is useful when going
          * to production, when you want to remove all logging overhead.
@@ -114,13 +119,13 @@ package com.fireflyLib.debug
          * @param reporter The object that reported the message. This can be null.
          * @param message The message to print to the log.
          */
-        public static function print(reporter:*, message:String):void
+        public static function print(reporter:String, message:String):void
         {
             // Early out if we are disabled.
             if(disabled) return;
 
             var entry:LogEntry = new LogEntry();
-            entry.reporter = TypeUtility.getClass(reporter);
+            entry.reporter = reporter;
             entry.message = message;
             entry.type = LogEntry.TRACE;
             processEntry(entry);
@@ -134,15 +139,14 @@ package com.fireflyLib.debug
 		 * @param method The name of the method that the warning was reported from.
 		 * @param message The warning to print to the log.
 		 */
-		public static function info(reporter:*, method:String, message:String = null):void
+		public static function info(reporter:String, message:String):void
 		{
             // Early out if we are disabled.
             if(disabled) return;
 
             var entry:LogEntry = new LogEntry();
-			entry.reporter = TypeUtility.getClass(reporter);
-			entry.method = method;
-			entry.message = method + " - " + message;
+			entry.reporter = reporter;
+			entry.message = message;
 			entry.type = LogEntry.INFO;
 			processEntry(entry);
 		}
@@ -155,16 +159,14 @@ package com.fireflyLib.debug
 		 * @param method The name of the method that the debug message was reported from.
 		 * @param message The debug message to print to the log.
 		 */
-		public static function debug(reporter:*, method:String, message:String = null):void
+		public static function debug(reporter:String, message:String):void
 		{
             // Early out if we are disabled.
-            if(disabled)
-                return;
+            if(disabled) return;
 
             var entry:LogEntry = new LogEntry();
-			entry.reporter = TypeUtility.getClass(reporter);
-			entry.method = method;
-			entry.message = method + " - " + message;
+			entry.reporter = reporter;
+			entry.message = message;
 			entry.type = LogEntry.DEBUG;
 			processEntry(entry);
 		}
@@ -177,16 +179,15 @@ package com.fireflyLib.debug
          * @param method The name of the method that the warning was reported from.
          * @param message The warning to print to the log.
          */
-        public static function warn(reporter:*, method:String, message:String = null):void
+        public static function warn(reporter:String, message:String):void
         {
             // Early out if we are disabled.
             if(disabled)
                 return;
 
             var entry:LogEntry = new LogEntry();
-            entry.reporter = TypeUtility.getClass(reporter);
-            entry.method = method;
-            entry.message = method + " - " + message;
+            entry.reporter = reporter;
+            entry.message = message;
             entry.type = LogEntry.WARNING;
             processEntry(entry);
         }
@@ -196,19 +197,16 @@ package com.fireflyLib.debug
          * will have the ERROR type.
          * 
          * @param reporter The object that reported the error. This can be null.
-         * @param method The name of the method that the error was reported from.
          * @param message The error to print to the log.
          */
-        public static function error(reporter:*, method:String, message:String = null):void
+        public static function error(reporter:String, message:String):void
         {
             // Early out if we are disabled.
             if(disabled)
                 return;
 
             var entry:LogEntry = new LogEntry();
-            entry.reporter = TypeUtility.getClass(reporter);
-            entry.method = method;
-            entry.message = method + " - " + message;
+            entry.reporter = reporter;
             entry.type = LogEntry.ERROR;
             processEntry(entry);
         }
@@ -222,17 +220,16 @@ package com.fireflyLib.debug
          * @param message The message to print to the log.
          * @param type The custom type to give the message.
          */
-        public static function printCustom(reporter:*, method:String, type:String, message:String = null):void
+        public static function printCustom(reporter:String, type:String, message:String):void
         {
             // Early out if we are disabled.
             if(disabled)
                 return;
 
             var entry:LogEntry = new LogEntry();
-            entry.reporter = TypeUtility.getClass(reporter);
-            entry.method = method;
+            entry.reporter = reporter;
             entry.type = type;
-            entry.message = method + message ? (" - " + message) : "";
+            entry.message = message;
             processEntry(entry);
         }
         
@@ -254,47 +251,44 @@ package com.fireflyLib.debug
             return "[no callstack available]";
         }
 
-        public static function printHeader(report:*, message:String):void
+        public static function printHeader(report:String, message:String):void
         {
             print(report, message);
         }
         
-        public static function printFooter(report:*, message:String):void
+        public static function printFooter(report:String, message:String):void
         {
             print(report, message);
         }
 		
-		//----------------
+		//--------------------------------------------------------------------------------------------------------------
         
-        public var enabled:Boolean = false;
-
-        protected var mOwner:Class;
+		public var reporter:String = null;
+        public var enabled:Boolean = true;
         
-        public function Logger(owner:Class, defaultEnabled:Boolean = true)
+        public function Logger(reporter:String)
         {
-			mOwner = owner;
-            enabled = defaultEnabled;
+			this.reporter = reporter;
         }
 		
-		public function info(method:String, message:String = null):void
+		public function info(message:String):void
 		{
-			if(enabled) Logger.info(mOwner, method, message);
+			if(enabled) Logger.info(reporter, message);
 		}
 		
-        public function warn(method:String, message:String = null):void
+        public function warn(message:String):void
         {
-            if(enabled) Logger.warn(mOwner, method, message);
+            if(enabled) Logger.warn(reporter, message);
         }
         
-        public function error(method:String, message:String = null):void
+        public function error(message:String):void
         {
-            if(enabled) Logger.error(mOwner, method, message);
+            if(enabled) Logger.error(reporter, message);
         }
 
         public function print(message:String):void
         {
-            if(enabled) Logger.print(mOwner, message);
+            if(enabled) Logger.print(reporter, message);
         }
-        
     }
 }

@@ -48,17 +48,12 @@ package com.fireflyLib.debug
       /**
        * The object that printed the message to the log.
        */
-      public var reporter:Class = null;
-      
-      /**
-       * The method the entry was printed from.
-       */
-      public var method:String = "";
+      public var reporter:String = null;
       
       /**
        * The message that was printed.
        */
-      public var message:String = "";
+      public var message:String = null;
 	  
 	  /**
 	   * The type of the message (message, warning, or error).

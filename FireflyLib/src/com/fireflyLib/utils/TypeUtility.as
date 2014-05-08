@@ -154,7 +154,7 @@ package com.fireflyLib.utils
 		{
 			if (object is Class)
 			{
-				Logger.error(object, "isDynamic", "The object is a Class type, which is always dynamic");
+				Logger.error(getSimpleClassName(object), "isDynamic The object is a Class type, which is always dynamic");
 				return true;
 			}
 			
@@ -294,5 +294,3 @@ package com.fireflyLib.utils
 		private static var _instantiators:Dictionary = new Dictionary();
 	}
 }
-
-
