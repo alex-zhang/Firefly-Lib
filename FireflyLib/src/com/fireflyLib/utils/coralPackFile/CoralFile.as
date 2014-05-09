@@ -17,7 +17,7 @@ package com.fireflyLib.utils.coralPackFile
 	 * 
 	 * @author Alex Zhang
 	 * 
-	 */	 
+	 */
 	
 	public class CoralFile
 	{
@@ -80,15 +80,44 @@ package com.fireflyLib.utils.coralPackFile
 			}
 		}
 
-		public function serialize(outPut:ByteArray):void
+		public function serialize(output:ByteArray):void
 		{
-			outPut.writeUTF(this.fullName);
+			output.writeUTF(this.fullName);
 			var contentBytesLen:uint = mContentBytes ? mContentBytes.length : 0;
-			outPut.writeUnsignedInt(contentBytesLen);
+			output.writeUnsignedInt(contentBytesLen);
 			if(contentBytesLen > 0)
 			{
-				outPut.writeBytes(mContentBytes);
+				output.writeBytes(mContentBytes);
 			}
+		}
+		
+		public function getContentIsCoralPackFile():Boolean
+		{
+			if(!mContentBytes) return false;
+			if(mContentBytes.length < CoralPackFile.FILE_FLAG.length) return false;
+			
+			var lastPosition:uint = mContentBytes.position;
+			mContentBytes.position = 0;
+			var fileFlag:String = mContentBytes.readUTFBytes(CoralPackFile.FILE_FLAG.length);
+			mContentBytes.position = lastPosition;
+			if(fileFlag == CoralPackFile.FILE_FLAG)
+			{
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public function getContentCoralPackFile():CoralPackFile
+		{
+			if(getContentIsCoralPackFile())
+			{
+				var coralPackFile:CoralPackFile = new CoralPackFile();
+				coralPackFile.deserialize(mContentBytes);
+				return coralPackFile;
+			}
+			
+			return null;
 		}
 		
 		public function dispose():void

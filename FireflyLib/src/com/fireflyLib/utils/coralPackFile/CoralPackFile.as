@@ -56,6 +56,8 @@ package com.fireflyLib.utils.coralPackFile
 		public function get isCompress():Boolean { return mIsContentCompress; }
 		public function set isCompress(value:Boolean):void { mIsContentCompress = value; }
 		
+		public function get fileCount():Boolean { return mFileCount; }
+		
 		public function hasFile(fileFullName:String):Boolean
 		{
 			return mFileFullNameMap[fileFullName] !== undefined;
@@ -106,14 +108,25 @@ package com.fireflyLib.utils.coralPackFile
 		
 		public function addFile(file:CoralFile):CoralFile
 		{
-			var fullName:String = file.fullName;
+			var fileFullName:String = file.fullName;
 			
-			if(hasFile(fullName)) return null;
+			if(hasFile(fileFullName)) return null;
 			
-			mFileFullNameMap[fullName] = file;
+			mFileFullNameMap[fileFullName] = file;
 			mFileCount++;
 			
 			return file;
+		}
+		
+		public function addFile2(fileFullName:String, fileBytes:ByteArray):CoralFile
+		{
+			if(hasFile(fileFullName)) return null;
+			
+			var coralFile:CoralFile = new CoralFile();
+			coralFile.fullName = fileFullName;
+			coralFile.contentBytes = fileBytes;
+			
+			return addFile(coralFile);
 		}
 		
 		public function removeFile(fileFullName:String, dispose:Boolean = false):CoralFile
@@ -143,7 +156,7 @@ package com.fireflyLib.utils.coralPackFile
 			if(contentBytesLen > 0)
 			{
 				mContentBytes = new ByteArray();
-				input.readBytes(mContentBytes, 0, input.readUnsignedInt());
+				input.readBytes(mContentBytes, 0, contentBytesLen);
 				
 				if(mIsContentCompress)
 				{
