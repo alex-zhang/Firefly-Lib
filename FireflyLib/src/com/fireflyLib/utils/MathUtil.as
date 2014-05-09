@@ -169,7 +169,7 @@ package com.fireflyLib.utils
 			return degrees * Math.PI / 180;
 		}
 		
-		public static function twoPointToRadian(startX:Number, startY:Number, endX:Number, endY:Number):Number
+		public static function getRadianByTwoPoint(startX:Number, startY:Number, endX:Number, endY:Number):Number
 		{
 			return Math.atan2(endY - startY, endX - startX);
 		}
@@ -185,14 +185,14 @@ package com.fireflyLib.utils
 		}
 		
 		//About Random
-		public static function randomBetween(min:Number, max:Number):Number
+		public static function randomNumberBetween(min:Number, max:Number):Number
 		{
 			return lerp(min, max, Math.random());
 		}
 		
-		public static function randomValues(values:Array):*
+		public static function randomFromValues(values:Array):*
 		{
-			return values[int(Math.random() * values.length)];
+			return values[randomIndex(values.length)];
 		}
 		
 		public static function randomIndex(count:uint):int

@@ -24,8 +24,6 @@ package com.fireflyLib.debug
     */
    public class Profiler
    {
-	  public static const REPORTER_NAME:String = "Profiler";
-	   
       public static var enabled:Boolean = false;
       public static var nameFieldWidth:int = 50;
       public static var indentAmount:int = 3;
@@ -162,7 +160,7 @@ package com.fireflyLib.debug
          _wantReport = false;
          
          var header:String = sprintf( "%-" + nameFieldWidth + "s%-8s%-8s%-8s%-8s%-8s%-8s", "name", "Calls", "Total%", "NonSub%", "AvgMs", "MinMs", "MaxMs" );
-         Logger.print(REPORTER_NAME, header);
+         Logger.print(Profiler, header);
          report_R(_rootNode, 0);
       }
       
@@ -203,7 +201,7 @@ package com.fireflyLib.debug
              entry = sprintf( "%-" + (indent * indentAmount) + "s%-" + (nameFieldWidth - indent * indentAmount) + "s%-8s%-8s%-8s%-8s%-8s%-8s", "",
                  (hasKids ? "+" : "-") + pi.name, pi.activations, displayTime.toFixed(2), displayNonSubTime.toFixed(2), (Number(pi.totalTime) / Number(pi.activations)).toFixed(1), pi.minTime, pi.maxTime);             
          }
-         Logger.print(REPORTER_NAME, entry);
+         Logger.print(Profiler, entry);
          
          // Sort and draw our kids.
          var tmpArray:Array = new Array();

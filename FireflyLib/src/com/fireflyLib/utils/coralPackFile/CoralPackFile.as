@@ -1,67 +1,85 @@
-package src.com.fireflyLib.utils.coralPackFile
+package com.fireflyLib.utils.coralPackFile
 {
 	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
 
 	/**
-	 * CoralPackDirFile Content Bytes Structure
+	 * CoralPackFile Bytes Structure
 	 *
+	 * |------------------------------------------------------------------------
+	 * | flag 'coral'          | version				   |
+	 * | 4Bytes				   | 16bit + charBytes         |
+	 * |
+	 * | hasCompressed         |
+	 * | 1Byte
+	 * |
+	 * | contentBytesLen  	   | contentBytes
+	 * | 32bit            	   | bytes
+	 * |
+	 * | ----------------------------------------
 	 * | fileCount
-	 *   16bit
+	 * | 16bit
+	 * | 
+	 * | fileBytesLength       | CoralPackFile(Bytes Structure)
+	 * | 32bit                 | bytes
+	 * |
+	 * | ...
+	 * |
+	 * | ----------------------------------------
+	 * |
+	 * |------------------------------------------------------------------------
 	 * 
-	 * | fileBytesLength  | CoralPackFile(Bytes Structure)
-	 * | 32bit            | bytes
+	 * @author Alex Zhang
 	 * 
-	 * ...
-	 * 
-	 * @author zhangcheng
-	 * 
-	 */	
-	
-	public class CoralPackFile extends CoralFile
+	 */	 
+
+	public class CoralPackFile
 	{
+		public static const FILE_FLAG:String = "coral";
+		public static const VERSION:String = "0.0.1";
+		
+		private var mVersion:String = VERSION;
+		private var mIsContentCompress:Boolean = false;
+		
 		private var mFileCount:int = 0;
 		private var mFileFullNameMap:Array = [];
+		
+		private var mContentBytes:ByteArray;
 		
 		public function CoralPackFile()
 		{
 			super();
 		}
 		
-		//dead end
-		override public function get contentBytes():ByteArray 
-		{ 
-			throw new Error("u can not call this api again. in CoralPackFile"); 
-		}
-		
-		override public function set contentBytes(value:ByteArray):void 
-		{ 
-			throw new Error("u can not call this api again. in CoralPackFile"); 
-		}
+		public final function get version():String { return mVersion; };
+
+		public function get isCompress():Boolean { return mIsContentCompress; }
+		public function set isCompress(value:Boolean):void { mIsContentCompress = value; }
 		
 		public function hasFile(fileFullName:String):Boolean
 		{
 			return mFileFullNameMap[fileFullName] !== undefined;
 		}
 		
-		public function getFile(fileFullName:String):CoralPackFile
+		public function getFile(fileFullName:String):CoralFile
 		{
 			return mFileFullNameMap[fileFullName];
 		}
 		
-		public function getAllFiles(results:Vector.<CoralPackFile> = null):Vector.<CoralPackFile>
+		public function getAllFiles(results:Vector.<CoralFile> = null):Vector.<CoralFile>
 		{
-			results ||= new Vector.<CoralPackFile>();
-			for each(var file:CoralPackFile in mFileFullNameMap)
+			results ||= new Vector.<CoralFile>();
+			for each(var file:CoralFile in mFileFullNameMap)
 			{
 				results.push(file);
 			}
 			return results;
 		}
 		
-		public function getFilesByExtention(extention:String, results:Vector.<CoralPackFile> = null):Vector.<CoralPackFile>
+		public function getFilesByExtention(extention:String, results:Vector.<CoralFile> = null):Vector.<CoralFile>
 		{
-			results ||= new Vector.<CoralPackFile>();
-			for each(var file:CoralPackFile in mFileFullNameMap)
+			results ||= new Vector.<CoralFile>();
+			for each(var file:CoralFile in mFileFullNameMap)
 			{
 				if(file.extention == extention)
 				{
@@ -72,10 +90,10 @@ package src.com.fireflyLib.utils.coralPackFile
 			return results;
 		}
 		
-		public function getFilesByFilter(filterFunction:Function, results:Vector.<CoralPackFile> = null):Vector.<CoralPackFile>
+		public function getFilesByFilter(filterFunction:Function, results:Vector.<CoralFile> = null):Vector.<CoralFile>
 		{
-			results ||= new Vector.<CoralPackFile>();
-			for each(var file:CoralPackFile in mFileFullNameMap)
+			results ||= new Vector.<CoralFile>();
+			for each(var file:CoralFile in mFileFullNameMap)
 			{
 				if(filterFunction(file))
 				{
@@ -86,7 +104,7 @@ package src.com.fireflyLib.utils.coralPackFile
 			return results;
 		}
 		
-		public function addFile(file:CoralPackFile):CoralPackFile
+		public function addFile(file:CoralFile):CoralFile
 		{
 			var fullName:String = file.fullName;
 			
@@ -98,82 +116,130 @@ package src.com.fireflyLib.utils.coralPackFile
 			return file;
 		}
 		
-		public function removeFile(fileFullName:String):CoralPackFile
+		public function removeFile(fileFullName:String, dispose:Boolean = false):CoralFile
 		{
 			if(!hasFile(fileFullName)) return null;
 			
-			var file:CoralPackFile = mFileFullNameMap[fileFullName];
-
+			var file:CoralFile = mFileFullNameMap[fileFullName];
+			if(dispose)
+			{
+				file.dispose();
+			}
+			
 			delete mFileFullNameMap[fileFullName];
 			mFileCount--;
 			
 			return file;
 		}
 		
-		public function removeAllFiles():void
+		public function deserialize(input:ByteArray):void
 		{
+			input.position += FILE_FLAG.length;//ignore file flag.
+			mVersion = input.readUTF();
+			mIsContentCompress = input.readBoolean();
+			
+			mContentBytes = null;
+			var contentBytesLen:uint = input.readUnsignedInt();
+			if(contentBytesLen > 0)
+			{
+				mContentBytes = new ByteArray();
+				input.readBytes(mContentBytes, 0, input.readUnsignedInt());
+				
+				if(mIsContentCompress)
+				{
+					mContentBytes.uncompress(CompressionAlgorithm.LZMA);
+				}
+				
+				mFileCount = mContentBytes.readShort();
+				
+				var fileBytesLen:uint = 0;
+				var fileBytes:ByteArray;
+				var file:CoralFile;
+				
+				for(var i:int = 0; i < mFileCount; i++)
+				{
+					fileBytesLen = mContentBytes.readUnsignedInt();
+					fileBytes = new ByteArray();
+					mContentBytes.readBytes(fileBytes, 0, fileBytesLen);
+					
+					file = new CoralFile();
+					file.deserialize(fileBytes);
+					
+					addFile(file);
+				}
+			}
+		}
+		
+		public function serialize(outPut:ByteArray):void
+		{
+			mContentBytes = null;
+			
+			if(mFileCount > 0)
+			{
+				mContentBytes = new ByteArray();
+				mContentBytes.writeShort(mFileCount);
+				
+				var fileBytesLen:uint = 0;
+				var fileBytes:ByteArray;
+				for each(var file:CoralFile in mFileFullNameMap)
+				{
+					fileBytes = new ByteArray();
+					file.serialize(fileBytes);
+
+					fileBytesLen = fileBytes.length;
+					mContentBytes.writeUnsignedInt(fileBytesLen);
+					mContentBytes.writeBytes(fileBytes);
+				}
+				
+				if(mIsContentCompress)
+				{
+					mContentBytes.compress(CompressionAlgorithm.LZMA);
+				}
+			}
+			
+			var contentBytesLen:uint = mContentBytes ? mContentBytes.length : 0;
+			
+			outPut.writeUTFBytes(FILE_FLAG);
+			outPut.writeUTF(VERSION);
+			outPut.writeBoolean(mIsContentCompress);
+			outPut.writeUnsignedInt(contentBytesLen);
+			
+			if(contentBytesLen > 0)
+			{
+				outPut.writeBytes(mContentBytes);
+			}
+		}
+		
+		public function clear():void
+		{
+			if(mContentBytes)
+			{
+				mContentBytes.clear();
+				mContentBytes = null;
+			}
+
 			mFileFullNameMap = [];
 			mFileCount = 0;
 		}
 		
-		override public function deserialize(input:ByteArray):void
+		public function dispose():void
 		{
-			super.deserialize(input);
-			
-			mFileCount = mContentBytes.readShort();
-			
-			var fileBytesLen:uint = 0;
-			var fileBytes:ByteArray;
-			var file:CoralPackFile;
-			
-			for(var i:int = 0; i < mFileCount; i++)
+			if(mContentBytes)
 			{
-				fileBytesLen = mContentBytes.readUnsignedInt();
-				fileBytes = new ByteArray();
-				mContentBytes.readBytes(fileBytes, 0, fileBytesLen);
-				
-				file = new CoralPackFile();
-				file.deserialize(fileBytes);
-				
-				mFileFullNameMap[file.fullName] = file;
+				mContentBytes.clear();
+				mContentBytes = null;
 			}
-		}
-		
-		override public function serialize(outPut:ByteArray):void
-		{
-			mContentBytes = new ByteArray();
-			mContentBytes.writeShort(mFileCount);
-			
-			var fileBytesLen:uint = 0;
-			var fileBytes:ByteArray;
-			for each(var file:CoralPackFile in mFileFullNameMap)
-			{
-				fileBytes = new ByteArray();
-				file.serialize(fileBytes);
-				
-				fileBytesLen = fileBytes.length;
-				mContentBytes.writeUnsignedInt(fileBytesLen);
-				mContentBytes.writeBytes(fileBytes);
-			}
-			
-			super.serialize(outPut);
-		}
-		
-		override public function dispose():void
-		{
-			super.dispose();
 			
 			if(mFileFullNameMap)
 			{
-				for each(var file:CoralPackFile in mFileFullNameMap)
+				for each(var file:CoralFile in mFileFullNameMap)
 				{
 					file.dispose();
 				}
 				
 				mFileFullNameMap = null;
+				mFileCount = 0;
 			}
-			
-			mFileCount = 0;
 		}
 	}
 }

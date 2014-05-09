@@ -10,7 +10,7 @@ package com.fireflyLib.utils
 		public function EventEmitter(owner:Object = null)
 		{
 			super();
-
+			
 			mOwner = owner;
 		}
 		

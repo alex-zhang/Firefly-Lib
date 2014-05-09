@@ -1,4 +1,4 @@
-package src.com.fireflyLib.utils.dataRepo
+package com.fireflyLib.utils.dataRepo
 {
 	import flash.utils.ByteArray;
 

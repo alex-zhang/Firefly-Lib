@@ -11,8 +11,6 @@ package com.fireflyLib.debug
      */
     public class Console
     {
-		public static const REPORTER_NAME:String = "Console";
-		
         /**
          * The mCommands, indexed by name.
          */
@@ -51,27 +49,25 @@ package com.fireflyLib.debug
         {
             // Sanity checks.
             if (callback == null)
-                Logger.error(REPORTER_NAME, "registerCommand " + name + " has no callback!");
+                Logger.error(Console, "registerCommand", "Command '" + name + "' has no callback!");
             
             if (!name || name.length == 0)
-                Logger.error(REPORTER_NAME, "registerCommand Command has no name!");
-
+                Logger.error(Console, "registerCommand", "Command has no name!");
+            
             if (name.indexOf(" ") != -1)
-				Logger.error(REPORTER_NAME, "registerCommand Command " + name + " has a space in it, it will not work.");
+                Logger.error(Console, "registerCommand", "Command '" + name + "' has a space in it, it will not work.");
             
-			name = name.toLowerCase();
+            // Fill in description.
+            var c:ConsoleCommand = new ConsoleCommand();
+            c.name = name;
+            c.callback = callback;
+            c.docs = docs;
             
-            if (mCommands[name])
-                Logger.warn(REPORTER_NAME, "registerCommand Replacing existing command " + name + ".");
+            if (mCommands[name.toLowerCase()])
+                Logger.warn(Console, "registerCommand", "Replacing existing command '" + name + "'.");
             
-			// Fill in description.
-			var c:ConsoleCommand = new ConsoleCommand();
-			c.name = name;
-			c.callback = callback;
-			c.docs = docs;
-			
             // Set it.
-            mCommands[name] = c;
+            mCommands[name.toLowerCase()] = c;
             
             // Update the list.
             mCommandList.push(c);
@@ -84,6 +80,7 @@ package com.fireflyLib.debug
         public static function getCommandList():Array
         {
             ensuremCommandsOrdered();
+            
             return mCommandList;
         }
         
@@ -121,7 +118,7 @@ package com.fireflyLib.debug
             
             if (!potentialCommand)
             {
-                Logger.warn(REPORTER_NAME, "processLine No such command '" + args[0].toString() + "'!");
+                Logger.warn(Console, "processLine", "No such command '" + args[0].toString() + "'!");
                 return;
             }
             
@@ -137,7 +134,7 @@ package com.fireflyLib.debug
                 {
                     errorStr += " - " + e.getStackTrace();
                 }
-                Logger.error(REPORTER_NAME, args[0] + " " + errorStr);
+                Logger.error(Console, args[0], errorStr);
             }
         }
         
@@ -152,13 +149,13 @@ package com.fireflyLib.debug
                 // Get mCommands in alphabetical order.
                 ensuremCommandsOrdered();
                 
-                Logger.print(REPORTER_NAME, "Keyboard shortcuts: ");
-                Logger.print(REPORTER_NAME, "[SHIFT]-TAB - Cycle through autocompleted mCommands.");
-                Logger.print(REPORTER_NAME, "PGUP/PGDN   - Page log view up/down a page.");
-                Logger.print(REPORTER_NAME, "");
+                Logger.print(Console, "Keyboard shortcuts: ");
+                Logger.print(Console, "[SHIFT]-TAB - Cycle through autocompleted mCommands.");
+                Logger.print(Console, "PGUP/PGDN   - Page log view up/down a page.");
+                Logger.print(Console, "");
                 
                 // Display results.
-                Logger.print(REPORTER_NAME, "Commands:");
+                Logger.print(Console, "mCommands:");
                 for (var i:int = 0; i < mCommandList.length; i++)
                 {
                     var cc:ConsoleCommand = mCommandList[i] as ConsoleCommand;
@@ -167,7 +164,7 @@ package com.fireflyLib.debug
                     if (prefix && prefix.length > 0 && cc.name.substr(0, prefix.length) != prefix)
                         continue;
                     
-                    Logger.print(REPORTER_NAME, "   " + cc.name + " - " + (cc.docs ? cc.docs : ""));
+                    Logger.print(Console, "   " + cc.name + " - " + (cc.docs ? cc.docs : ""));
                 }
                 
                 // List input options.
@@ -178,36 +175,39 @@ package com.fireflyLib.debug
                 if (!mStats)
                 {
                     mStats = new Stats();
-					Stage(GlobalPropertyBag.stage).addChild(mStats);
-                    Logger.print(REPORTER_NAME, "Enabled FPS display.");
+					Stage(GlobalPropertyBag.read("stage")).addChild(mStats);
+                    Logger.print(Console, "Enabled FPS display.");
                 }
                 else
                 {
 					Stage(GlobalPropertyBag.read("stage")).removeChild(mStats);
                     mStats = null;
-                    Logger.print(REPORTER_NAME, "Disabled FPS display.");
+                    Logger.print(Console, "Disabled FPS display.");
                 }
             }, "Toggle an FPS/Memory usage indicator.");
             
             registerCommand("verbose", function(level:int):void
             {
                 Console.verbosity = level;
-                Logger.print(REPORTER_NAME, "Verbosity set to " + level);
+                Logger.print(Console, "Verbosity set to " + level);
             }, "Set verbosity level of console output.");
             
             if(ExternalInterface.available)
             {
-                registerCommand("exit", function():void
-				{
-					if(ExternalInterface.available)
-					{
-						Logger.info(REPORTER_NAME, "exit " + ExternalInterface.call("window.close"));	
-					}
-					else
-					{
-						Logger.warn(REPORTER_NAME, "exit ExternalInterface is not avaliable");
-					}
-				}, "Attempts to exit the application using ExternalInterface if avaliable");
+                registerCommand("exit", _exitMethod,
+                    "Attempts to exit the application using ExternalInterface if avaliable");
+            }
+        }
+        
+        protected static function _exitMethod():void
+        {
+            if(ExternalInterface.available)
+            {
+                Logger.info(Console, "exit", ExternalInterface.call("window.close"));	
+            }
+            else
+            {
+                Logger.warn(Console, "exit", "ExternalInterface is not avaliable");
             }
         }
         
@@ -251,7 +251,7 @@ package com.fireflyLib.debug
          */
         public static function set hotKeyCode(value:uint):void
         {
-            Logger.print(REPORTER_NAME, "Setting hotKeyCode to: " + value);
+            Logger.print(Console, "Setting hotKeyCode to: " + value);
             mHotKeyCode = value;
         }
         

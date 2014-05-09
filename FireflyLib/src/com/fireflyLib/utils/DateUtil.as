@@ -7,7 +7,7 @@ package com.fireflyLib.utils
 		public static const ONE_HOUR_MILLISECOND:uint = ONE_MINNUTE_MILLISECOND * 60;
 		public static const ONE_DAY_MILLISECOND:uint = ONE_HOUR_MILLISECOND * 24;
 		
-		private static const _dateInstance:Date = new Date();
+		private static var _dateInstance:Date = new Date();
 		
 		public static function getMaxDateByYearMoth(year:uint, month:uint):uint
 		{

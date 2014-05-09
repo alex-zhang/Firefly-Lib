@@ -20,8 +20,6 @@ package com.fireflyLib.debug
      */
     public class LogViewer extends Sprite implements ILogAppender
     {
-		public static const REPORTER_NAME:String = "LogViewer";
-		
         protected var mMessageQueue:Array = [];
         protected var mMaxLength:uint = 200000;
         protected var mTruncating:Boolean = false;
@@ -112,7 +110,7 @@ package com.fireflyLib.debug
             // Copy content.
             System.setClipboard(logString);
             
-            Logger.print(REPORTER_NAME, "Copied console contents to clipboard.");
+            Logger.print(this, "Copied console contents to clipboard.");
         }
         
         /**
@@ -401,7 +399,7 @@ package com.fireflyLib.debug
         
         public function addLogMessage(level:String, loggerName:String, message:String):void
         {
-            var color:uint = LogColor.getColor(level);
+            var color:String = LogColor.getColor(level);
             
             // Cut down on the logger level if verbosity requests.
             if(Console.verbosity < 2)
@@ -416,7 +414,7 @@ package com.fireflyLib.debug
             for each (var msg:String in messages)
             {
                 var text:String = ((Console.verbosity > 0) ? level + ": " : "") + loggerName + " - " + msg;
-                mLogCache.push({"color": color, "text": text});
+                mLogCache.push({"color": parseInt(color.substr(1), 16), "text": text});
             }
             
             mConsoleDirty = true;
