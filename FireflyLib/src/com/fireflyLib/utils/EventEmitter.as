@@ -2,7 +2,7 @@ package com.fireflyLib.utils
 {
 	import flash.utils.getQualifiedClassName;
 	
-	public class EventEmitter
+	public class EventEmitter implements IEventEmitter
 	{
 		private var mEventListeners:Array
 		private var mOwner:Object;
@@ -82,11 +82,11 @@ package com.fireflyLib.utils
 			{
 				if(mOwner)
 				{
-					listeners[i].call(null, mOwner, eventObject);
+					listeners[i].call(mOwner, eventObject);
 				}
 				else
 				{
-					listeners[i].call(null, this, eventObject);
+					listeners[i].call(this, eventObject);
 				}
 			}
 		}
