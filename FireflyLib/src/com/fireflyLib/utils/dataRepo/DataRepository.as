@@ -261,5 +261,32 @@ package com.fireflyLib.utils.dataRepo
 			mTableImplClssesMap = null;
 			mTableCount = 0;
 		}
+		
+		public function toString():String 
+		{
+			var results:String = "version: " + mVersion + "\n" +
+				"tableCount: " + mTableCount + "\n";
+			
+			var tableData:Array = null;
+			var table:DataTable = null;
+			for(var tableName:String in mTablesMap)
+			{
+				tableData = mTablesMap[tableName];
+				if(tableData[0] != null)
+				{
+					table = tableData[0];
+					results += table.toString() + "\n";
+				}
+				else 
+				{
+					var bytes:ByteArray = tableData[1];
+					results += "tableName: " + tableName + 
+						" bytes: " + Number(bytes.length / 1024).toFixed(2) + " k" + "\n";
+				}
+			}
+			
+			return results;
+				
+		}
 	}
 }

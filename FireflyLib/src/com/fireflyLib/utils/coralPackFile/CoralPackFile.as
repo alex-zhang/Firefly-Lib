@@ -163,7 +163,7 @@ package com.fireflyLib.utils.coralPackFile
 					mContentBytes.uncompress(CompressionAlgorithm.LZMA);
 				}
 				
-				mFileCount = mContentBytes.readShort();
+				mFileCount = mContentBytes.readUnsignedShort();
 				
 				var fileBytesLen:uint = 0;
 				var fileBytes:ByteArray;

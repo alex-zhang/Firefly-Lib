@@ -34,7 +34,7 @@ package com.fireflyLib.utils.dataRepo
 		private var mFieldsNames:Array = null;
 		
 		private var mRowCount:int = 0;
-		private var mModesMap:Array = null;//key ->[0, 1]0->instance(mModelCls) 1->Bytes
+		private var mModesMap:Array = [];//key ->[0, 1]0->instance(mModelCls) 1->Bytes
 		
 		private var mKeyFieldName:String;
 		
@@ -321,6 +321,16 @@ package com.fireflyLib.utils.dataRepo
 			mFieldsNames = null;
 			mModesMap = null;
 			mModelCls = null;
+		}
+		
+		public function toString():String
+		{
+			var results:String = "tableName " + mTableName + "\n" +
+				"fieldsCount " + mFieldsCount + "\n" +
+				mFieldsNames ? "fieldsNames " + mFieldsNames.join(" ") + "\n" : "" +
+				"rowCount " + mRowCount;
+				
+			return results;
 		}
 	}
 }
