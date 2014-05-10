@@ -169,7 +169,7 @@ package com.fireflyLib.utils
 			return degrees * Math.PI / 180;
 		}
 		
-		public static function getRadianByTwoPoint(startX:Number, startY:Number, endX:Number, endY:Number):Number
+		public static function twoPointToRadian(startX:Number, startY:Number, endX:Number, endY:Number):Number
 		{
 			return Math.atan2(endY - startY, endX - startX);
 		}
@@ -178,8 +178,8 @@ package com.fireflyLib.utils
 		//======================================================================
 		public static function distance(x0:Number, y0:Number, x1:Number, y1:Number):Number
 		{
-			var dy:Number = y1 - y0;
-			var dx:Number = x1 - x0;
+			const dy:Number = y1 - y0;
+			const dx:Number = x1 - x0;
 			
 			return Math.sqrt(dy * dy + dx * dx);
 		}
