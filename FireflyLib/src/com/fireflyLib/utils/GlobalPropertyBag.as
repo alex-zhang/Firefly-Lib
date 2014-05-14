@@ -4,40 +4,43 @@ package com.fireflyLib.utils
 
 	public class GlobalPropertyBag extends PropertyBag
 	{
-		private static var mInstance:GlobalPropertyBag;
-		
 		public static var stage:Stage = null;
+		
+		private static var mInstance:GlobalPropertyBag;
 		
 		public static function has(name:String):Boolean
 		{
-			return getInstance().has(name);
+			if(!mInstance) mInstance = new GlobalPropertyBag();
+			
+			return mInstance.has(name);
 		}
 		
 		public static function write(name:String, value:*, hasEvent:Boolean = false):*
 		{
-			return getInstance().write(name, value, hasEvent);
+			if(!mInstance) mInstance = new GlobalPropertyBag();
+			
+			return mInstance.write(name, value, hasEvent);
 		}
 		
 		public static function read(name:String):*
 		{
-			return getInstance().read(name);
+			if(!mInstance) mInstance = new GlobalPropertyBag();
+			
+			return mInstance.read(name);
 		}
 		
 		public static function update(name:String, value:*, hasEvent:Boolean = false):*
 		{
-			return getInstance().update(name, value, hasEvent);
+			if(!mInstance) mInstance = new GlobalPropertyBag();
+			
+			return mInstance.update(name, value, hasEvent);
 		}
 
 		public static function remove(name:String, hasEvent:Boolean = false):*
 		{
-			return getInstance().remove(name, hasEvent);
-		}
-			
-		public static function getInstance():GlobalPropertyBag
-		{
 			if(!mInstance) mInstance = new GlobalPropertyBag();
 			
-			return mInstance;
+			return mInstance.remove(name, hasEvent);
 		}
 		
 		public function GlobalPropertyBag()
@@ -45,6 +48,7 @@ package com.fireflyLib.utils
 			super();
 			
 			if(mInstance) throw new Error("GlobalPropertyBag Singleton mode.");
+			mInstance = this;
 		}
 	}
 }
