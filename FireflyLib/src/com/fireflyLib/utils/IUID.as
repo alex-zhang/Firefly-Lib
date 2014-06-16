@@ -5,7 +5,7 @@ package com.fireflyLib.utils
 	 * 
 	 * <p>在以一个app中IUID一般都做唯一的。</p>
 	 * 
-	 * @author zhangcheng01
+	 * @author Alex.Zhang.
 	 * 
 	 */	
     public interface IUID

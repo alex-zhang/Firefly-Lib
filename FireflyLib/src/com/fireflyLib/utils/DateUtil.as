@@ -7,23 +7,23 @@ package com.fireflyLib.utils
 		public static const ONE_HOUR_MILLISECOND:uint = ONE_MINNUTE_MILLISECOND * 60;
 		public static const ONE_DAY_MILLISECOND:uint = ONE_HOUR_MILLISECOND * 24;
 		
-		private static var _dateInstance:Date = new Date();
+		private static var mHelperDate:Date = new Date();
 		
 		public static function getMaxDateByYearMoth(year:uint, month:uint):uint
 		{
 			var dateValue:uint = 25;
 			
-			_dateInstance.fullYear = year;
-			_dateInstance.month = month;
-			_dateInstance.date = dateValue;
+			mHelperDate.fullYear = year;
+			mHelperDate.month = month;
+			mHelperDate.date = dateValue;
 			
 			while(true)
 			{
 				dateValue += 1;
 
-				_dateInstance.date = dateValue;
+				mHelperDate.date = dateValue;
 
-				if(_dateInstance.month != month)
+				if(mHelperDate.month != month)
 				{
 					dateValue -= 1;
 					break;
@@ -36,11 +36,11 @@ package com.fireflyLib.utils
 		//获取某年某月的第一天是星期几0-6
 		public static function getFirstDateDayByYearMoth(year:uint, month:uint):uint
 		{
-			_dateInstance.fullYear = year;
-			_dateInstance.month = month;
-			_dateInstance.date = 1;
+			mHelperDate.fullYear = year;
+			mHelperDate.month = month;
+			mHelperDate.date = 1;
 			
-			return _dateInstance.day;
+			return mHelperDate.day;
 		}
 		
 		public static function cloneDate(date:Date):Date

@@ -12,6 +12,6 @@ package com.fireflyLib.utils
 		{
 		}
 		
-		return null;
+		return "[No StackTrace MSG in Release EVN]";
 	}
 }

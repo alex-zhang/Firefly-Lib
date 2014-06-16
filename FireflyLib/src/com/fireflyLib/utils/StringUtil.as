@@ -232,42 +232,34 @@ package com.fireflyLib.utils
 			return numberChars;
 		}
         
-		// "AB{0}D{1}F{0}" + C,E => ABCDEFA
-		// my name is {name}, my age is {age} + {name:zhang, age:24} => my name is zhang, my age is 24
-        public static function substitute(str:String, ... rest):String
+        public static function substitute(str:String, ...args):String
         {
-            if (str == null) return "";
+            if(str == null) return "";
             
-            var len:uint = rest.length;
+            var len:int = args.length;
 			if(len > 0)
 			{
 				var i:uint = 0;
-				var argsObj:Object = rest;
-				
 				if(len == 1)
 				{
-					if(rest[0] is String || !isNaN(rest[0]))
+					var argsObj:* = args[0];
+
+					//eg1. "AB{0}DEF" + C = > "ABCDEF" only 0 here.
+					if(argsObj is String || !isNaN(argsObj))
 					{
-						str = str.replace(new RegExp("\\{" + i + "\\}", "g"), rest[0].toString());
+						str = str.replace(new RegExp("\\{" + i + "\\}", "g"), argsObj);
 					}
-					else if(rest[0] is Array)
-					{
-						argsObj = rest[0];
-						len = argsObj.length;
-						for (i = 0; i < len; i++)
-						{
-							str = str.replace(new RegExp("\\{" + i + "\\}", "g"), argsObj[i]);
-						}
-					}
+					//Key-value Map. Array or Object.
+					//eg2. "My Name is {name} And I'm {age} years old." + {name:"Alex", age:24} => "My Name is Alex And I'm 24 years old."
 					else
 					{
-						argsObj = rest[0];
 						for(var key:String in argsObj)
 						{
-							str = str.replace(new RegExp("\\{"+key+"\\}", "g"), argsObj[key]);
+							str = str.replace(new RegExp("\\{" + key + "\\}", "g"), argsObj[key]);
 						}
 					}
 				}
+				//eg3. "AB{0}D{1}{2}" + [C,E,F] = > "ABCDEF"
 				else
 				{
 					for (i = 0; i < len; i++)

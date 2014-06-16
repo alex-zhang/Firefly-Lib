@@ -1,8 +1,5 @@
 package com.fireflyLib.utils
 {
-	import flash.utils.Dictionary;
-	import flash.utils.describeType;
-	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getQualifiedSuperclassName;
 	

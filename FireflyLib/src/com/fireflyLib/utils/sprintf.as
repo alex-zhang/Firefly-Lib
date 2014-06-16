@@ -47,7 +47,7 @@ package com.fireflyLib.utils
  *
  *  Report bugs to manish.jethani@gmail.com
  */
-public function sprintf(format:String, ... args):String
+public function sprintf(format:String, ...args):String
 {
 	var result:String = "";
 
@@ -301,7 +301,6 @@ public function sprintf(format:String, ... args):String
 }
 
 // Private functions
-
 function leftPad(source:String, targetLength:int, padChar:String = " "):String
 {
 	if (source.length < targetLength)
