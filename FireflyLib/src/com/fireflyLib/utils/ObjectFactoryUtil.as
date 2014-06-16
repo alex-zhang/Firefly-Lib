@@ -3,30 +3,30 @@ package com.fireflyLib.utils
 	public final class ObjectFactoryUtil
 	{
 		// constructor's type is String Type or Class or Function.
-		public static function newInstance(cls:Class, 
-										   properties:Object = null, 
-										   constructorParams:Array = null, 
-										   clsProperties:Object = null):*
+		public static function create(clsType:Class, 
+										   props:Object = null,
+										   ctorParams:Array = null, 
+										   clsProps:Object = null):*
 		{
-			if(!cls) return null;
-			
+			if(!clsType) return null;
+
 			var f:Function;
 			var p:String;
-			
-			if(clsProperties)
+
+			if(clsProps)
 			{
-				for(p in clsProperties)
+				for(p in clsProps)
 				{
-					if(p in cls)
+					if(p in clsType)
 					{
-						if(cls[p] is Function)
+						if(clsType[p] is Function)
 						{
-							f = cls[p];
-							f.apply(null, clsProperties[p] as Array);//the value is the method's parms.
+							f = clsType[p];
+							f.apply(null, clsProps[p] as Array);//the value is the method's parms.
 						}
 						else
 						{
-							cls[p] = clsProperties[p];
+							clsType[p] = clsProps[p];
 						}
 					}
 				}
@@ -36,88 +36,88 @@ package com.fireflyLib.utils
 			//so no suggest pass the value from constructor. so here the constructor is only support one parameter.
 			var instance:* = null;
 			
-			var constructorParamsLen:int = constructorParams ? constructorParams.length : 0;
-			switch(constructorParamsLen)
+			var ctorParamsLen:int = ctorParams ? ctorParams.length : 0;
+			switch(ctorParamsLen)
 			{
-				case 0: instance = new cls(); break;
-				case 1: instance = new cls(constructorParams[0]); break;
-				case 2: instance = new cls(constructorParams[0], 
-					constructorParams[1]); break;
-				case 3: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2]); break;
-				case 4: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3]); break;
-				case 5: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4]); break;
-				case 6: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4],
-					constructorParams[5]); break;
-				case 7: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4],
-					constructorParams[5],
-					constructorParams[6]); break;
-				case 8: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4],
-					constructorParams[5],
-					constructorParams[6],
-					constructorParams[7]); break;
-				case 9: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4],
-					constructorParams[5],
-					constructorParams[6],
-					constructorParams[7],
-					constructorParams[8]); break;
-				case 10: instance = new cls(constructorParams[0], 
-					constructorParams[1], 
-					constructorParams[2],
-					constructorParams[3],
-					constructorParams[4],
-					constructorParams[5],
-					constructorParams[6],
-					constructorParams[7],
-					constructorParams[8],
-					constructorParams[9]); break;
+				case 0: instance = new clsType(); break;
+				case 1: instance = new clsType(ctorParams[0]); break;
+				case 2: instance = new clsType(ctorParams[0], 
+					ctorParams[1]); break;
+				case 3: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2]); break;
+				case 4: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3]); break;
+				case 5: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4]); break;
+				case 6: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4],
+					ctorParams[5]); break;
+				case 7: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4],
+					ctorParams[5],
+					ctorParams[6]); break;
+				case 8: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4],
+					ctorParams[5],
+					ctorParams[6],
+					ctorParams[7]); break;
+				case 9: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4],
+					ctorParams[5],
+					ctorParams[6],
+					ctorParams[7],
+					ctorParams[8]); break;
+				case 10: instance = new clsType(ctorParams[0], 
+					ctorParams[1], 
+					ctorParams[2],
+					ctorParams[3],
+					ctorParams[4],
+					ctorParams[5],
+					ctorParams[6],
+					ctorParams[7],
+					ctorParams[8],
+					ctorParams[9]); break;
 				
 				default:
-					throw new RangeError("constructorParams length is too long!");
+					throw new RangeError("ctorParams length is too long!");
 					break;
 				
 				/* we only support the count of constructor pameraters count to 11, 
 				i think it's totally enough. other wise you'd better refactor your code instead. */
 			}
-			
-			if(properties)
+
+			if(props)
 			{
-				for(p in properties)
+				for(p in props)
 				{
 					if(p in instance)
 					{
 						if(instance[p] is Function)
 						{
 							f = instance[p];
-							f.apply(instance, properties[p] as Array);//the value is the method's parms.
+							f.apply(instance, props[p] as Array);//the value is the method's parms.
 						}
 						else
 						{
-							instance[p] = properties[p];
+							instance[p] = props[p];
 						}
 					}
 				}

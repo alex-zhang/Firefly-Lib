@@ -36,7 +36,7 @@ package com.fireflyLib.utils
 			if(!object) return null;
 			
 			//because the Object instance has no super class.
-			return getQualifiedSuperclassName(object);
+			return getQualifiedSuperclassName(object) == null;
 		}
 		
 		public static function isDynamicType(object:*):Boolean

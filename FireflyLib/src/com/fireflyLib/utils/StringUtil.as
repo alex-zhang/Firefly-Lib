@@ -64,7 +64,7 @@ package com.fireflyLib.utils
 			return str.substring(1, 0).toUpperCase() + str.substring(1);
 		}
 		
-		//-1 left 1 right 0 both
+		//trimType: -1 left 1 right 0 both
         public static function trimWhitespace(str:String, trimType:int = 0):String
         {
             if(str == null) return "";
@@ -98,6 +98,7 @@ package com.fireflyLib.utils
         }
 
 		//trimChar("abc", "a") = > "bc" 
+		//trimType: -1 left 1 right 0 both
 		public static function trimChar(str:String, char:String, trimType:int = 0):String
 		{
 			if(str == null) return "";
@@ -131,6 +132,8 @@ package com.fireflyLib.utils
 			}
 		}
 		
+		//trimCharor("abc123abc", "abc") = > "123"
+		//trimType: -1 left 1 right 0 both
 		public static function trimCharsAnd(str:String, chars:String, trimType:int = 0):String
 		{
 			if(str == null) return "";
@@ -166,7 +169,8 @@ package com.fireflyLib.utils
 			}
 		}
 
-		//trimChar("abc", "a|c") = > "b"
+		//trimCharor("abc", "a|c") = > "b"
+		//trimType: -1 left 1 right 0 both
 		public static function trimCharsOr(str:String, chars:Array, trimType:int = 0):String
 		{
 			if(str == null) return "";
@@ -372,9 +376,9 @@ package com.fireflyLib.utils
         }
 		
 		//key:value;key:name
-		public static function decodeSimpleKeyValueStr(str:String, 
-													   fstDelimiter:String = ";", 
-													   secDelimiter:String = ":", typeClass:Class = null):Object
+		public static function decodeKeyValueStr(str:String, 
+											   fstDelimiter:String = ";", 
+											   secDelimiter:String = ":", typeClass:Class = null):Object
 		{
 			var result:Object = typeClass ? new typeClass() : {};
 			
@@ -393,7 +397,7 @@ package com.fireflyLib.utils
 					result[itemArr[0]] = itemArr[1];					
 				}
 			}
-			
+
 			return result;
 		}
     }

@@ -1,7 +1,5 @@
 package com.fireflyLib.utils
 {
-	import flash.display.DisplayObject;
-	
 	/**
 	 *  The NameUtil utility class defines static methods for
 	 *  creating names for Flex objects.
@@ -67,7 +65,7 @@ package com.fireflyLib.utils
 		 *  in the hierarchy of DisplayObject objects in an application.
 		 *  
 		 */
-		public static function displayObjectToString(displayObject:DisplayObject):String
+		public static function displayObjectToString(displayObject:Object):String
 		{
 			var result:String;
 			
@@ -75,7 +73,7 @@ package com.fireflyLib.utils
 			// to build up the string to return.
 			try
 			{
-				for (var o:DisplayObject = displayObject;
+				for (var o:Object = displayObject;
 					o != null;
 					o = o.parent)
 				{
