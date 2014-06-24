@@ -3,26 +3,6 @@ package com.fireflyLib.utils
     public final class StringUtil
     {
 		/**
-		 * Determine the file extension of a file. 
-		 * @param file A path to a file.
-		 * @return The file extension.
-		 * 
-		 */
-		public static function getFileExtension(file:String):String
-		{
-			var extensionIndex:Number = file.lastIndexOf(".");
-			if(extensionIndex == -1)
-			{
-				//No extension
-				return "";
-			} 
-			else 
-			{
-				return file.substr(extensionIndex + 1,file.length);
-			}
-		}
-		
-		/**
 		 * Returns the first character of the string passed to it. 
 		 */		
 		public static function getFirstChar(str:String):String 
@@ -62,6 +42,11 @@ package com.fireflyLib.utils
 		public static function capitalize(str:String):String
 		{
 			return str.substring(1, 0).toUpperCase() + str.substring(1);
+		}
+		
+		public static function uncapitalize(str:String):String
+		{
+			return str.substring(1, 0).toLowerCase() + str.substring(1);
 		}
 		
 		//trimType: -1 left 1 right 0 both
@@ -268,7 +253,7 @@ package com.fireflyLib.utils
 				{
 					for (i = 0; i < len; i++)
 					{
-						str = str.replace(new RegExp("\\{" + i + "\\}", "g"), argsObj[i]);
+						str = str.replace(new RegExp("\\{" + i + "\\}", "g"), args[i]);
 					}
 				}
 			}
@@ -399,6 +384,39 @@ package com.fireflyLib.utils
 			}
 
 			return result;
+		}
+		
+		public static function getFileName(file:String):String
+		{
+			var extensionIndex:Number = file.lastIndexOf(".");
+			if(extensionIndex == -1)
+			{
+				return file;
+			}
+			else
+			{
+				return file.substr(0, extensionIndex);
+			}
+		}
+		
+		/**
+		 * Determine the file extension of a file. 
+		 * @param file A path to a file.
+		 * @return The file extension.
+		 * 
+		 */
+		public static function getFileExtension(file:String):String
+		{
+			var extensionIndex:Number = file.lastIndexOf(".");
+			if(extensionIndex == -1)
+			{
+				//No extension
+				return "";
+			} 
+			else 
+			{
+				return file.substr(extensionIndex + 1,file.length);
+			}
 		}
     }
 }

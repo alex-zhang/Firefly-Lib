@@ -7,9 +7,7 @@ package com.fireflyLib.utils
 		private static const mInstance:GlobalPropertyBag = new GlobalPropertyBag();
 		
 		//we must pass the right stage value before anything begin.
-
 		public static var stage:Stage = null;
-		
 		
 		public static function has(name:String):Boolean
 		{
@@ -42,7 +40,6 @@ package com.fireflyLib.utils
 			super();
 			
 			if(mInstance) throw new Error("GlobalPropertyBag Singleton mode.");
-			mInstance = this;
 		}
 	}
 }
