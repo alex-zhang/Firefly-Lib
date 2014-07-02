@@ -21,6 +21,8 @@ package com.fireflyLib.utils
 	 * 			key:"xxx",
 	 * 			functionName:[1, 2, 3]// u can defined the function here.
 	 * 		}
+	 * 
+	 * 		callback:Function(instance)
 	 * }
 	 * 
 	 * @author Alex Zhang
@@ -88,12 +90,19 @@ package com.fireflyLib.utils
 				{
 					clsType = clsType();
 				}
+				
+				var callback:Function = config.callback as Function;
 
 				config = ObjectFactoryUtil.create(
 						clsType as Class, 
 						config.props,
 						config.ctorParams,
 						config.clsProps);
+				
+				if(callback != null)
+				{
+					callback(config);
+				}
 			}
 			
 			return config;
