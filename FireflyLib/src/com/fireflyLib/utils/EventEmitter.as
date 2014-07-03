@@ -4,7 +4,7 @@ package com.fireflyLib.utils
 	
 	public class EventEmitter implements IEventEmitter
 	{
-		private var mEventListeners:Array
+		private var mEventListeners:Array;
 		private var mOwner:Object;
 		
 		public function EventEmitter(owner:Object = null)
