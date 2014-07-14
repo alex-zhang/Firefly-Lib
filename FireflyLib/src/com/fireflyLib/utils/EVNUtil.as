@@ -1,6 +1,8 @@
 package com.fireflyLib.utils
 {
+	import flash.desktop.NativeApplication;
 	import flash.system.Capabilities;
+	import flash.utils.getDefinitionByName;
 
 	public final class EVNUtil
 	{
@@ -40,6 +42,43 @@ package com.fireflyLib.utils
 			}
 			
 			return mIsLinux;
+		}
+		
+		public static function isDestopPlayer():Boolean
+		{
+			//Air
+			return Capabilities.playerType == "Desktop";
+		}
+		
+		public static function isActivePlayer():Boolean
+		{
+			return Capabilities.playerType == "ActiveX"; 
+		}
+		
+		public function isPlugInPlayer():Boolean
+		{
+			return Capabilities.playerType == "PlugIn";
+		}
+		
+		public static function reportedDPI():Number
+		{
+			var serverString:String = unescape(Capabilities.serverString); 
+			var reportedDpi:Number = Number(serverString.split("&DP=", 2)[1]);
+			return reportedDpi;
+		}
+		
+		private static var mAppVersion:String;
+		public static function getAppVersion():String
+		{
+			if(mAppVersion) return mAppVersion;
+			
+			var nativeApplicationCls:Class = getDefinitionByName("flash.desktop::NativeApplication") as Class;
+			
+			var appDescriptor:XML = nativeApplicationCls.applicationDescriptor;
+			var ns:Namespace = appDescriptor.namespace(); 
+			
+			mAppVersion = appDescriptor.ns::versionNumber;
+			return mAppVersion;
 		}
 	}
 }
