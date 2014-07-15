@@ -1,6 +1,5 @@
 package com.fireflyLib.utils
 {
-	import flash.desktop.NativeApplication;
 	import flash.system.Capabilities;
 	import flash.utils.getDefinitionByName;
 
@@ -74,7 +73,7 @@ package com.fireflyLib.utils
 			
 			var nativeApplicationCls:Class = getDefinitionByName("flash.desktop::NativeApplication") as Class;
 			
-			var appDescriptor:XML = nativeApplicationCls.applicationDescriptor;
+			var appDescriptor:XML = nativeApplicationCls.nativeApplication.applicationDescriptor;
 			var ns:Namespace = appDescriptor.namespace(); 
 			
 			mAppVersion = appDescriptor.ns::versionNumber;
