@@ -54,7 +54,7 @@ package com.fireflyLib.utils
 		}
 		
 		//d(day):0, h(hour):0, m(minute):0,s(second):0,ms(millisecond):0 
-		public static function calculateTimeByMillisecond(ms:Number, results:Object = null):Object
+		public static function calculateTimeByMillisecond(ms:Number, result:Object = null):Object
 		{
 			var quotient:uint;//商
 			var modulo:Number;//余数
@@ -70,15 +70,17 @@ package com.fireflyLib.utils
 			
 			var second:uint = ms / ONE_SECOND_MILLISECOND;
 			var millisecond:uint = ms % ONE_SECOND_MILLISECOND;
-			
-			results ||= {};
-			
-			results.d = day;
-			results.h = hour;
-			results.m = minute;
-			results.s = second;
-			results.ms = millisecond;
-			return results;
+
+            result ||= {};
+
+            result.d = day;
+            result.h = hour;
+            result.m = minute;
+            result.s = second;
+            result.ms = millisecond;
+			return result;
 		}
+
+
 	}
 }

@@ -9,11 +9,8 @@ package com.fireflyLib.utils
 		
 		public static function get osSeparator():String
 		{
-			if(EVNUtil.isWindows())
-			{
-				return WONDOWS_SEP;
-			}
-			
+			if(EVNUtil.isWindows()) return WONDOWS_SEP;
+
 			return DEFAULT_SEP;
 		}
 		/**
@@ -138,5 +135,20 @@ package com.fireflyLib.utils
 			
 			return absoluteURL;
 		}
+
+        /**
+         * <pre>
+         * http://www.google.com -> http
+         * file://...            -> file
+         *
+         * </pre>
+         */
+        public function protocol(url:String):String
+        {
+            var indexOfProtocolSepator:int = url.indexOf('://');
+            if(indexOfProtocolSepator == -1) return null;
+
+            return url.substring(0, indexOfProtocolSepator)
+        }
 	}
 }

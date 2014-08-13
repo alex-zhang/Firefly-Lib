@@ -2,6 +2,68 @@ package com.fireflyLib.utils
 {
     public final class StringUtil
     {
+        /**
+         * fill the str with char.
+         */
+        public static function fillString(str:String, length:int, fillChar:String = " "):String
+        {
+            if(!fillChar || fillChar.length == 0)
+            {
+                fillChar = " ";
+            }
+            else if(fillChar.length > 1)
+            {
+                fillChar = fillChar.charAt(0);
+            }
+
+            if(str.length > length)
+            {
+                str = str.substring(0, length);
+            }
+            else
+            {
+                while(str.length < length)
+                {
+                    str += fillChar;
+                }
+            }
+
+            return str;
+        }
+
+
+        /**
+         * <p>Checks if a String is email pattern.</p>
+         *
+         * <pre>
+         * StringUtils.isEmailFormat("jacky@gmail.com")       = true
+         * StringUtils.isEmailFormat("jacky.com")             = false
+         * StringUtils.isEmailFormat("jacky.com")             = false
+         * StringUtils.isEmailFormat("@jacky.com")            = false
+         * </pre>
+         *
+         * @param str  the String to check, may be null
+         * @return <code>true</code> if the String is not empty and not null
+         */
+        public static function isEmailFormat(str:String):Boolean
+        {
+            var emailExp:RegExp = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/i;
+            return emailExp.test(str);
+        }
+
+        /**
+         * <p>Checks if a String is a valid phone number(including mobile number).</p>
+         *
+         * @param str  the String to check, may be null
+         * @return <code>true</code> if the String is not empty and not null
+         */
+        public static function isPhoneNumberFormat(str:String):Boolean{
+            //see http://www.cnblogs.com/xyzhuzhou/archive/2012/05/08/2490388.html
+            var mobileExp:RegExp = /^0?(13[0-9]|15[012356789]|18[0236789]|14[57])[0-9]{8}$/
+            return mobileExp.test( str );
+        }
+
+
 		/**
 		 * Returns the first character of the string passed to it. 
 		 */		
@@ -292,7 +354,9 @@ package com.fireflyLib.utils
             {
                 var charCode:uint = str.charCodeAt(i);
                 if (testCharacter(charCode, restrict))
+                {
                     charCodes.push(charCode);
+                }
             }
             
             return String.fromCharCode.apply(null, charCodes);
