@@ -88,7 +88,7 @@ package com.fireflyLib.utils
 				var clsType:Object = config[CLS_TYPE];
 				if(clsType is Function)
 				{
-					clsType = clsType();
+					clsType = Function(clsType)();
 				}
 				
 				var callback:Function = config.callback as Function;

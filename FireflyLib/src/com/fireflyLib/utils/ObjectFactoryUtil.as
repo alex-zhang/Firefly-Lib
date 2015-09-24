@@ -5,7 +5,7 @@ package com.fireflyLib.utils
 		// constructor's type is String Type or Class or Function.
 		public static function create(clsType:Class, 
 										   props:Object = null,
-										   ctorParams:Array = null, 
+										   ctorParams:Object = null,//Object Or Array
 										   clsProps:Object = null):*
 		{
 			if(!clsType) return null;
@@ -36,7 +36,17 @@ package com.fireflyLib.utils
 			//so no suggest pass the value from constructor. so here the constructor is only support one parameter.
 			var instance:* = null;
 			
-			var ctorParamsLen:int = ctorParams ? ctorParams.length : 0;
+			var ctorParamsLen:int = 0;
+			if(ctorParams)
+			{
+				if(!(ctorParams is Array))
+				{
+					ctorParams = [ctorParams];
+				}
+
+				ctorParamsLen = ctorParams.length;
+			}
+
 			switch(ctorParamsLen)
 			{
 				case 0: instance = new clsType(); break;
@@ -95,6 +105,17 @@ package com.fireflyLib.utils
 					ctorParams[7],
 					ctorParams[8],
 					ctorParams[9]); break;
+				case 11: instance = new clsType(ctorParams[0],
+						ctorParams[1],
+						ctorParams[2],
+						ctorParams[3],
+						ctorParams[4],
+						ctorParams[5],
+						ctorParams[6],
+						ctorParams[7],
+						ctorParams[8],
+						ctorParams[9],
+						ctorParams[10]); break;
 				
 				default:
 					throw new RangeError("ctorParams length is too long!");
