@@ -56,7 +56,7 @@ package com.fireflyLib.utils
 			return TypeUtility.isJsonObjectType(config) && CLS_TYPE in config;
 		}
 
-		private static function createFromAny(config:*):*
+		public static function createFromAny(config:*):*
 		{
 			if(config is String)
 			{
@@ -76,7 +76,7 @@ package com.fireflyLib.utils
 			}
 		}
 		
-		private static function createFromObject(config:Object):*
+		public static function createFromObject(config:Object):*
 		{
 			for(var key:String in config)
 			{
@@ -108,7 +108,7 @@ package com.fireflyLib.utils
 			return config;
 		}
 		
-		private static function createFromArray(arrConfig:Array):*
+		public static function createFromArray(arrConfig:Array):*
 		{
 			var n:int = arrConfig ? arrConfig.length : 0;
 			for(var i:int = 0; i < n; i++)
@@ -119,7 +119,7 @@ package com.fireflyLib.utils
 			return arrConfig;
 		}
 
-		private static function createFromString(strConfig:String):*
+		public static function createFromString(strConfig:String):*
 		{
 			switch(strConfig)
 			{
